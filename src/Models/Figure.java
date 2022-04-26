@@ -5,20 +5,22 @@
  */
 package Models;
 
-import DBUtils.Model;
+import DBUtils.SQLModel;
 
 /**
  *
  * @author a21samuelnc
  */
-public class Figure extends Model {
+public class Figure extends SQLModel {
     public String otra;
     
+    public Figure() {
+        super("figures", "id");
+    }
+    
     public Figure(String otra) {
-        super("jajuas", "id2");
+        this();
         
         this.otra = otra;
     }
-    
-    
 }

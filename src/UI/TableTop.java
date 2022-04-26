@@ -8,6 +8,8 @@ package UI;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 
+import static config.Config.*;
+
 /**
  *
  * @author a21samuelnc
@@ -16,8 +18,6 @@ public class TableTop extends JPanel {
     private UI ui;
     
     private int diff;
-    private int heigth;
-    private int width;
     
     private Cell[][] cells;
     
@@ -27,31 +27,32 @@ public class TableTop extends JPanel {
     public TableTop(UI ui) {
         this.ui = ui;
         
-        diff = 1000;
-        heigth = 100;
-        width = 100;
+        diff = DEFAULT_DIFF;
         
-        cells = new Cell[heigth][width];
+        cells = new Cell[TP_HEIGTH][TP_WIDTH];
         isRunning = true;
-        setSize(heigth * 10, width * 10);
 
-        for (int i = 0; i < heigth; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < TP_HEIGTH; i++) {
+            for (int j = 0; j < TP_WIDTH; j++) {
                 Cell cell = new Cell(this, i, j);
                 cells[i][j] = cell;
                 add(cell);
             }
         }
         
-        setLayout(new GridLayout(heigth, width));
+        setSize(TP_WIDTH * CELL_WIDTH, TP_HEIGTH * CELL_WIDTH);
+        setLayout(new GridLayout(TP_HEIGTH, TP_WIDTH));
     }
     
     public void run() throws InterruptedException {
         while (isRunning) {
-            if (!isPaused) {
-                Thread.sleep(diff);
-                update();
+            if (isPaused) {
+                Thread.sleep(10);
+                continue;
             }
+
+            Thread.sleep(diff);
+            update();
         }
     }
     
@@ -77,13 +78,13 @@ public class TableTop extends JPanel {
                 int _col = col + j;
                 
                 if (_row < 0)
-                    _row = heigth - 1;
-                if (_row >= heigth)
+                    _row = TP_HEIGTH - 1;
+                if (_row >= TP_HEIGTH)
                     _row = 0;
                 
                 if (_col < 0)
-                    _col = width - 1;
-                if (_col >= width)
+                    _col = TP_WIDTH - 1;
+                if (_col >= TP_WIDTH)
                     _col = 0;
                 
                 if (cells[_row][_col].isAlive())

@@ -5,20 +5,24 @@
  */
 package Models;
 
-import DBUtils.Model;
+import DBUtils.SQLModel;
 
 /**
  *
  * @author a21samuelnc
  */
-public class Player extends Model {
+public class Player extends SQLModel {
     public String name;
-    
-    public Player(String name) {
+    public long maxGen;
+
+    public Player() {
         super("players", "id");
-        
-        this.name = name;
     }
     
-    
+    public Player(String name) {
+        this();
+        
+        this.name = name;
+        this.maxGen = 0;
+    }
 }

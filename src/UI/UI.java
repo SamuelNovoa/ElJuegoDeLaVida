@@ -5,6 +5,7 @@
  */
 package UI;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 /**
@@ -19,9 +20,16 @@ public class UI extends JFrame {
         tp = new TableTop(this);
         btns = new ButtonsGame(this);
         
+        add(btns);        
         add(tp);
-        add(btns);
+
+        setSize(tp.getWidth(), tp.getHeight() + btns.getHeight());
+        System.out.println(tp.getWidth() + " : " + (tp.getHeight() + btns.getHeight()));
         
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setVisible(true);
     }
     
