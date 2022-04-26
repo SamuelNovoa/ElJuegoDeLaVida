@@ -89,4 +89,11 @@ public class TableTop extends JPanel {
 
         return count;
     }
+    
+    public void reset() {
+        for (Cell[] row : cells)
+            for (Cell cell : row)
+                cell.reset();
+    }
+    
 }

@@ -51,20 +51,25 @@ public class Cell extends JButton implements ActionListener {
     }
     
     public void saveState() {
-        if (isAlive != isAliveTemp) {
-            isAlive = isAliveTemp;
-            
-            setBackground(isAlive ? Color.BLACK : Color.WHITE);
-        }
+        if (isAlive != isAliveTemp)
+            killCell(!isAliveTemp);
     }
     
     public boolean isAlive() {
         return isAlive;
     }
     
+    public void reset() {
+        killCell(true);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent event) {
-        isAlive = !isAlive;
-        setBackground(isAlive ? Color.BLACK : Color.WHITE);
+        killCell(isAlive);
+    }
+    
+    private void killCell(boolean isAlive) {
+        this.isAlive = !isAlive;
+        setBackground(isAlive ? Color.WHITE : Color.BLACK);
     }
 }
