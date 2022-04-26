@@ -13,16 +13,20 @@ import javax.swing.JPanel;
  * @author a21samuelnc
  */
 public class TableTop extends JPanel {
-    int diff;
-    int heigth;
-    int width;
+    private UI ui;
+    
+    private int diff;
+    private int heigth;
+    private int width;
     
     private Cell[][] cells;
     
     boolean isRunning;
     boolean isPaused;
     
-    public TableTop() {
+    public TableTop(UI ui) {
+        this.ui = ui;
+        
         diff = 1000;
         heigth = 100;
         width = 100;
@@ -96,4 +100,7 @@ public class TableTop extends JPanel {
                 cell.reset();
     }
     
+    public void pause() {
+        isPaused = !isPaused;
+    }
 }

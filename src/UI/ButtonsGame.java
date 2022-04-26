@@ -10,16 +10,20 @@ import javax.swing.JPanel;
  * @author a21iagoof
  */
 public class ButtonsGame extends JPanel implements ActionListener {
+    private UI ui;
+    
     private JButton pause;
     private JButton reset;
     private JButton vlc;
     private JButton back;
 
-    public ButtonsGame(TableTop tp) {
+    public ButtonsGame(UI ui) {
+        this.ui = ui;
+        
         add(pause = new JButton("Iniciar/Pausar"));
         add(reset = new JButton("Reiniciar"));
         add(vlc = new JButton("Aumentar velocidade"));
-        add(back = new JButton("Volver atr·s"));
+        add(back = new JButton("Volver atr√°s"));
     }
     
     @Override

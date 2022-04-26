@@ -5,8 +5,6 @@
  */
 package UI;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -15,11 +13,14 @@ import javax.swing.JFrame;
  */
 public class UI extends JFrame {
     private TableTop tp;
+    private ButtonsGame btns;
     
     public UI() {
-        tp = new TableTop();
+        tp = new TableTop(this);
+        btns = new ButtonsGame(this);
         
         add(tp);
+        add(btns);
         
         setVisible(true);
     }
@@ -28,7 +29,22 @@ public class UI extends JFrame {
         try {
             tp.run();
         } catch (InterruptedException ex) {
-            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public TableTop getTp() {
+        return tp;
+    }
+
+    public void setTp(TableTop tp) {
+        this.tp = tp;
+    }
+
+    public ButtonsGame getBtns() {
+        return btns;
+    }
+
+    public void setBtns(ButtonsGame btns) {
+        this.btns = btns;
     }
 }
