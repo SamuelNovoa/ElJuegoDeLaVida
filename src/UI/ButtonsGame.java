@@ -45,7 +45,7 @@ public class ButtonsGame extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == reset) {
-            // 
+            ui.getTp().reset();
         } else if (event.getSource() == pause) { //  start - pause
             ui.getTp().pause();
         } else if (event.getSource() == vlc) {

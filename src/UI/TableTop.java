@@ -31,6 +31,7 @@ public class TableTop extends JPanel {
         
         cells = new Cell[TP_HEIGTH][TP_WIDTH];
         isRunning = true;
+        isPaused = true;
 
         for (int i = 0; i < TP_HEIGTH; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {
@@ -95,7 +96,8 @@ public class TableTop extends JPanel {
         return count;
     }
     
-    public void reset() {
+    // Si no está pausado antes no hace nada, no da tiempo a resetear todo, y si se pausa antes, a veces, queda el anterior tablero al volver start
+    public void reset() { 
         for (Cell[] row : cells)
             for (Cell cell : row)
                 cell.reset();

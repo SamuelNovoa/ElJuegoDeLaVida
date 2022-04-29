@@ -46,7 +46,9 @@ public class Cell extends JButton implements ActionListener {
         
         if (!isAlive && cellsAlive == 3)
             isAliveTemp = true;
-        else if (isAlive && cellsAlive != 2 && cellsAlive != 3)
+        else if (isAlive && (cellsAlive == 2 || cellsAlive == 3))
+            isAliveTemp = true;
+        else 
             isAliveTemp = false;
     }
     
