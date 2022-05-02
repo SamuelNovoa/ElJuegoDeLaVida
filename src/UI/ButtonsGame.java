@@ -6,6 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import static config.Config.*;
+import java.awt.Dimension;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 
 /**
@@ -15,18 +17,18 @@ import javax.swing.BoxLayout;
 public class ButtonsGame extends JPanel implements ActionListener {
     private UI ui;
     
-    private JButton pause;
-    private JButton reset;
-    private JButton vlc;
-    private JButton back;
+    private Button pause;
+    private Button reset;
+    private Button vlc;
+    private Button back;
 
     public ButtonsGame(UI ui) {
         this.ui = ui;
         
-        pause = new JButton("Iniciar/Pausar");
-        reset = new JButton("Reiniciar");
-        vlc = new JButton("Aumentar velocidade");
-        back = new JButton("Volver atrás");
+        pause = new Button("Iniciar/Pausar");
+        reset = new Button("Reiniciar");
+        vlc = new Button("Aumentar velocidade");
+        back = new Button("Volver atrás");
         
         pause.addActionListener(this);
         reset.addActionListener(this);
@@ -34,11 +36,14 @@ public class ButtonsGame extends JPanel implements ActionListener {
         back.addActionListener(this);
         
         add(pause);
+        add(Box.createRigidArea(new Dimension(25, 0)));
         add(reset);
+        add(Box.createRigidArea(new Dimension(25, 0)));
         add(vlc);
+        add(Box.createRigidArea(new Dimension(25, 0)));
         add(back);
         
-        setSize(TP_WIDTH * CELL_WIDTH, BTNS_HEIGTH);
+        
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     }
     
@@ -51,7 +56,7 @@ public class ButtonsGame extends JPanel implements ActionListener {
         } else if (event.getSource() == vlc) {
             ui.getTp().changeVelocity();
         } else if (event.getSource() == back) {
-            ui.changeUI();
+            ui.endGame();
         }
     }
     

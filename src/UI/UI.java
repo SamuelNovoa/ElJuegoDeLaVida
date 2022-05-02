@@ -5,6 +5,12 @@
  */
 package UI;
 
+import static config.Config.*;
+import java.awt.Color;
+
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
@@ -16,23 +22,23 @@ public class UI extends JFrame {
     private TableTop tp;
     private ButtonsGame btns;
     private MainPanel mp;
-    private boolean inGame;
     
     public UI() {
         tp = new TableTop(this);
         btns = new ButtonsGame(this);
         mp = new MainPanel(this);
         
-        inGame = false;
         add(mp);
         
         setTitle("El Juego de la Vida");
         
-        setSize(tp.getWidth(), tp.getHeight() + btns.getHeight());
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGTH));
+        
+        setBackground(new Color(0xCFD6A6));
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
     
@@ -43,19 +49,25 @@ public class UI extends JFrame {
         }
     }
     
-    public void changeUI() {
-        if (inGame) {
-            removeAll();
-            add(mp);
-            validate();
-            inGame= false;
-        } else {
-            remove(mp);
-            add(btns);        
-            add(tp);
-            validate();
-            inGame = true;
-        }
+    public void startGame() {
+        remove(mp);
+        
+        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(btns);        
+        add(tp);
+        
+        revalidate();
+        repaint();
+    }
+    
+    public void endGame() {
+        remove(btns);
+        remove(tp);
+        
+        add(mp);
+        
+        revalidate();
+        repaint();
     }
 
     public TableTop getTp() {

@@ -13,7 +13,7 @@ public class Config {
     public final static int TP_WIDTH = 120;
     public final static int TP_HEIGTH = 80;
     public final static int DEFAULT_DIFF = 500;
-    
-    public final static int CELL_WIDTH = 10;
-    public final static int BTNS_HEIGTH = 50;
+
+    public final static int MIN_WIDTH = 800;
+    public final static int MIN_HEIGTH = 600;
 }

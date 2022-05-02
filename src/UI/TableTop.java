@@ -40,8 +40,7 @@ public class TableTop extends JPanel {
                 add(cell);
             }
         }
-        
-        setSize(TP_WIDTH * CELL_WIDTH, TP_HEIGTH * CELL_WIDTH);
+
         setLayout(new GridLayout(TP_HEIGTH, TP_WIDTH));
     }
     
@@ -97,7 +96,7 @@ public class TableTop extends JPanel {
     }
     
     // Si no está pausado antes no hace nada, no da tiempo a resetear todo, y si se pausa antes, a veces, queda el anterior tablero al volver start
-    public void reset() { 
+    public void reset() {
         for (Cell[] row : cells)
             for (Cell cell : row)
                 cell.reset();
@@ -108,24 +107,9 @@ public class TableTop extends JPanel {
     }
     
     public void changeVelocity() {
-        switch (diff) {
-            case DEFAULT_DIFF:
-                diff = DEFAULT_DIFF / 2;    // x2
-                break;
-            case DEFAULT_DIFF / 2:
-                diff = DEFAULT_DIFF / 4;    // x4
-                break;
-            case DEFAULT_DIFF / 4:
-                diff = DEFAULT_DIFF / 8;    // x8
-                break;
-            case DEFAULT_DIFF / 8:
-                diff = DEFAULT_DIFF / 16;    // x16
-                break;
-            case DEFAULT_DIFF / 16:
-                diff = DEFAULT_DIFF;         // x1
-                break;
-            default:
-                break;
-        }
+        if (diff <= DEFAULT_DIFF / 16)
+            diff = DEFAULT_DIFF;
+        else
+            diff /= 2;
     }
 }
