@@ -106,4 +106,26 @@ public class TableTop extends JPanel {
     public void pause() {
         isPaused = !isPaused;
     }
+    
+    public void changeVelocity() {
+        switch (diff) {
+            case DEFAULT_DIFF:
+                diff = DEFAULT_DIFF / 2;    // x2
+                break;
+            case DEFAULT_DIFF / 2:
+                diff = DEFAULT_DIFF / 4;    // x4
+                break;
+            case DEFAULT_DIFF / 4:
+                diff = DEFAULT_DIFF / 8;    // x8
+                break;
+            case DEFAULT_DIFF / 8:
+                diff = DEFAULT_DIFF / 16;    // x16
+                break;
+            case DEFAULT_DIFF / 16:
+                diff = DEFAULT_DIFF;         // x1
+                break;
+            default:
+                break;
+        }
+    }
 }

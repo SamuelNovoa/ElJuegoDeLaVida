@@ -15,14 +15,18 @@ import javax.swing.JFrame;
 public class UI extends JFrame {
     private TableTop tp;
     private ButtonsGame btns;
+    private MainPanel mp;
+    private boolean inGame;
     
     public UI() {
         tp = new TableTop(this);
         btns = new ButtonsGame(this);
+        mp = new MainPanel(this);
         
-        add(btns);        
-        add(tp);
-
+        inGame = false;
+        add(mp);
+        
+        setName("El Juego de la Vida");
         setSize(tp.getWidth(), tp.getHeight() + btns.getHeight());
         System.out.println(tp.getWidth() + " : " + (tp.getHeight() + btns.getHeight()));
         
@@ -37,6 +41,22 @@ public class UI extends JFrame {
         try {
             tp.run();
         } catch (InterruptedException ex) {
+        }
+    }
+    
+    public void changeUI() {
+        if (inGame) {
+//            remove(tp);
+//            remove(btns);
+//            add(mp);
+//            validate();
+//            inGame= false;
+        } else {
+            remove(mp);
+            add(btns);        
+            add(tp);
+            validate();
+            inGame = true;
         }
     }
 
