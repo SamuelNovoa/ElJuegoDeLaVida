@@ -26,10 +26,9 @@ public class UI extends JFrame {
         inGame = false;
         add(mp);
         
-        setName("El Juego de la Vida");
-        setSize(tp.getWidth(), tp.getHeight() + btns.getHeight());
-        System.out.println(tp.getWidth() + " : " + (tp.getHeight() + btns.getHeight()));
+        setTitle("El Juego de la Vida");
         
+        setSize(tp.getWidth(), tp.getHeight() + btns.getHeight());
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,11 +45,10 @@ public class UI extends JFrame {
     
     public void changeUI() {
         if (inGame) {
-//            remove(tp);
-//            remove(btns);
-//            add(mp);
-//            validate();
-//            inGame= false;
+            removeAll();
+            add(mp);
+            validate();
+            inGame= false;
         } else {
             remove(mp);
             add(btns);        
