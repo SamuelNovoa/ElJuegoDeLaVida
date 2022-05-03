@@ -13,16 +13,18 @@ public class TableTop extends JPanel {
     private UI ui;
     
     private int diff;
+    private int vlc;
     
     private Cell[][] cells;
     
-    boolean isRunning;
-    boolean isPaused;
+    private boolean isRunning;
+    private boolean isPaused;
     
     public TableTop(UI ui) {
         this.ui = ui;
         
         diff = DEFAULT_DIFF;
+        vlc = 1;
         
         cells = new Cell[TP_HEIGTH][TP_WIDTH];
         isRunning = true;
@@ -90,7 +92,6 @@ public class TableTop extends JPanel {
         return count;
     }
     
-    // Si no está pausado antes no hace nada, no da tiempo a resetear todo, y si se pausa antes, a veces, queda el anterior tablero al volver start
     public void reset() {
         for (Cell[] row : cells)
             for (Cell cell : row)
@@ -102,9 +103,15 @@ public class TableTop extends JPanel {
     }
     
     public void changeVelocity() {
-        if (diff <= DEFAULT_DIFF / 16)
-            diff = DEFAULT_DIFF;
+        if (vlc >= MAX_VLC)
+            vlc = 1;
         else
-            diff /= 2;
+            vlc *= 2;
+        
+        diff = DEFAULT_DIFF / vlc;
+    }
+    
+    public int getVlc() {
+        return vlc;
     }
 }

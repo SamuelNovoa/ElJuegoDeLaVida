@@ -23,15 +23,12 @@ public class ButtonsGame extends JPanel implements ActionListener {
     private Button back;
     private Button addPattern;
     
-    private int vlcStr;
-    
     public ButtonsGame(UI ui) {
-        vlcStr = 1;
         this.ui = ui;
         
         pause = new Button("Iniciar/Pausar");
         reset = new Button("Reiniciar");
-        vlc = new Button("Velocidad: x" + vlcStr);
+        vlc = new Button("Velocidad: x" + ui.getTp().getVlc());
         addPattern = new Button("Cargar forma");
         back = new Button("Volver atrás");
         
@@ -62,22 +59,12 @@ public class ButtonsGame extends JPanel implements ActionListener {
         } else if (event.getSource() == pause) {
             ui.getTp().pause();
         } else if (event.getSource() == vlc) {
-            vlc.setText("Velocidad: x" + changeVelocity());
             ui.getTp().changeVelocity();
+            vlc.setText("Velocidad: x" + ui.getTp().getVlc());
         } else if (event.getSource() == addPattern) {
             //
         } else if (event.getSource() == back) {
             ui.endGame();
         }
-    }
-    
-    
-    public int changeVelocity() {
-        if (vlcStr >= 16)
-            vlcStr = 1;
-        else
-            vlcStr *= 2;
-        
-        return vlcStr;
     }
 }

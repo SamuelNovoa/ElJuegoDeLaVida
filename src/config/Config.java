@@ -16,4 +16,6 @@ public class Config {
 
     public final static int MIN_WIDTH = 800;
     public final static int MIN_HEIGTH = 600;
+    
+    public final static int MAX_VLC = 32;
 }
