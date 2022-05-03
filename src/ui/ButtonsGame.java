@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,18 +21,24 @@ public class ButtonsGame extends JPanel implements ActionListener {
     private Button reset;
     private Button vlc;
     private Button back;
-
+    private Button addPattern;
+    
+    private int vlcStr;
+    
     public ButtonsGame(UI ui) {
+        vlcStr = 1;
         this.ui = ui;
         
         pause = new Button("Iniciar/Pausar");
         reset = new Button("Reiniciar");
-        vlc = new Button("Aumentar velocidade");
+        vlc = new Button("Velocidad: x" + vlcStr);
+        addPattern = new Button("Cargar forma");
         back = new Button("Volver atrás");
         
         pause.addActionListener(this);
         reset.addActionListener(this);
         vlc.addActionListener(this);
+        addPattern.addActionListener(this);
         back.addActionListener(this);
         
         add(pause);
@@ -40,6 +46,8 @@ public class ButtonsGame extends JPanel implements ActionListener {
         add(reset);
         add(Box.createRigidArea(new Dimension(25, 0)));
         add(vlc);
+        add(Box.createRigidArea(new Dimension(25, 0)));
+        add(addPattern);
         add(Box.createRigidArea(new Dimension(25, 0)));
         add(back);
         
@@ -51,13 +59,25 @@ public class ButtonsGame extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == reset) {
             ui.getTp().reset();
-        } else if (event.getSource() == pause) { //  start - pause
+        } else if (event.getSource() == pause) {
             ui.getTp().pause();
         } else if (event.getSource() == vlc) {
+            vlc.setText("Velocidad: x" + changeVelocity());
             ui.getTp().changeVelocity();
+        } else if (event.getSource() == addPattern) {
+            //
         } else if (event.getSource() == back) {
             ui.endGame();
         }
     }
     
+    
+    public int changeVelocity() {
+        if (vlcStr >= 16)
+            vlcStr = 1;
+        else
+            vlcStr *= 2;
+        
+        return vlcStr;
+    }
 }

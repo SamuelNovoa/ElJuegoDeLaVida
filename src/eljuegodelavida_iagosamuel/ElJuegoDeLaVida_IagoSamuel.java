@@ -5,7 +5,7 @@
  */
 package eljuegodelavida_iagosamuel;
 
-import UI.UI;
+import ui.UI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
