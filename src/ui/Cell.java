@@ -36,7 +36,6 @@ public class Cell extends JButton implements ActionListener {
     
     public void update() {
         // Comprobar alrededores y establecer isAliveTemp
-        
         int cellsAlive = tp.checkAlives(row, col);
         
         if (!isAlive && cellsAlive == 3)

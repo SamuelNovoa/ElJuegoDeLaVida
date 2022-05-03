@@ -4,9 +4,16 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 
 import static config.Config.*;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 
 /**
- *
+ * TODO:
+ *      - Click derecho para marcar figuras.
+ *      - Logger en archivo de texto.
+ *      - Base de datos
+ *      - Menú de figuras
+ * 
  * @author a21samuelnc
  */
 public class TableTop extends JPanel {
@@ -20,6 +27,9 @@ public class TableTop extends JPanel {
     private boolean isRunning;
     private boolean isPaused;
     
+    private JLabel genLabel;
+    private long generation;
+    
     public TableTop(UI ui) {
         this.ui = ui;
         
@@ -29,16 +39,27 @@ public class TableTop extends JPanel {
         cells = new Cell[TP_HEIGTH][TP_WIDTH];
         isRunning = true;
         isPaused = true;
+        
+        genLabel = new JLabel("Generación: 0");
+        genLabel.setAlignmentX(CENTER_ALIGNMENT);
+        
+        generation = 0L;
+        
+        JPanel grid = new JPanel();
+        grid.setLayout(new GridLayout(TP_HEIGTH, TP_WIDTH));
 
         for (int i = 0; i < TP_HEIGTH; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {
                 Cell cell = new Cell(this, i, j);
                 cells[i][j] = cell;
-                add(cell);
+                grid.add(cell);
             }
         }
 
-        setLayout(new GridLayout(TP_HEIGTH, TP_WIDTH));
+        add(grid);
+        add(genLabel);
+        
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
     
     public void run() throws InterruptedException {
@@ -48,8 +69,8 @@ public class TableTop extends JPanel {
                 continue;
             }
 
-            Thread.sleep(diff);
             update();
+            Thread.sleep(diff);
         }
     }
     
@@ -61,6 +82,9 @@ public class TableTop extends JPanel {
         for (Cell[] row : cells)
             for (Cell cell : row)
                 cell.saveState();
+        
+        generation++;
+        genLabel.setText("Generación: " + generation);
     }
     
     public int checkAlives(int row, int col) {
@@ -93,13 +117,20 @@ public class TableTop extends JPanel {
     }
     
     public void reset() {
+        isPaused = true;
+        
+        generation = 0;
+        genLabel.setText("Generación: 0");
+        
         for (Cell[] row : cells)
             for (Cell cell : row)
                 cell.reset();
     }
     
-    public void pause() {
+    public boolean pause() {
         isPaused = !isPaused;
+        
+        return isPaused;
     }
     
     public void changeVelocity() {

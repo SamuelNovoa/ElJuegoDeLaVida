@@ -11,15 +11,15 @@ import DBUtils.SQLModel;
  *
  * @author a21samuelnc
  */
-public class Player extends SQLModel {
+public class Profile extends SQLModel {
     public String name;
     public long maxGen;
 
-    public Player() {
-        super("players", "id");
+    public Profile() {
+        super("profiles", "id");
     }
     
-    public Player(String name) {
+    public Profile(String name) {
         this();
         
         this.name = name;

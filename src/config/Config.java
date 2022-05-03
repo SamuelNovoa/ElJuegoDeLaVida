@@ -18,4 +18,6 @@ public class Config {
     public final static int MIN_HEIGTH = 600;
     
     public final static int MAX_VLC = 32;
+    
+    public final static String GAME_TITLE = "El Juego de la Vida";
 }

@@ -26,7 +26,7 @@ public class ButtonsGame extends JPanel implements ActionListener {
     public ButtonsGame(UI ui) {
         this.ui = ui;
         
-        pause = new Button("Iniciar/Pausar");
+        pause = new Button("Iniciar");
         reset = new Button("Reiniciar");
         vlc = new Button("Velocidad: x" + ui.getTp().getVlc());
         addPattern = new Button("Cargar forma");
@@ -38,26 +38,33 @@ public class ButtonsGame extends JPanel implements ActionListener {
         addPattern.addActionListener(this);
         back.addActionListener(this);
         
-        add(pause);
-        add(Box.createRigidArea(new Dimension(25, 0)));
-        add(reset);
-        add(Box.createRigidArea(new Dimension(25, 0)));
-        add(vlc);
-        add(Box.createRigidArea(new Dimension(25, 0)));
-        add(addPattern);
-        add(Box.createRigidArea(new Dimension(25, 0)));
-        add(back);
+        JPanel btns = new JPanel();
+        btns.setLayout(new BoxLayout(btns, BoxLayout.X_AXIS));
+        btns.setAlignmentX(CENTER_ALIGNMENT);
         
+        btns.add(pause);
+        btns.add(Box.createRigidArea(new Dimension(25, 0)));
+        btns.add(reset);
+        btns.add(Box.createRigidArea(new Dimension(25, 0)));
+        btns.add(vlc);
+        btns.add(Box.createRigidArea(new Dimension(25, 0)));
+        btns.add(addPattern);
+        btns.add(Box.createRigidArea(new Dimension(25, 0)));
+        btns.add(back);
         
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(btns);
+        
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
     
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == reset) {
             ui.getTp().reset();
+            pause.setText("Iniciar");
         } else if (event.getSource() == pause) {
-            ui.getTp().pause();
+            pause.setText(ui.getTp().pause() ? "Iniciar" : "Pausar");
         } else if (event.getSource() == vlc) {
             ui.getTp().changeVelocity();
             vlc.setText("Velocidad: x" + ui.getTp().getVlc());

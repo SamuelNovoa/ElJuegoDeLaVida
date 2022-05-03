@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import models.Profile;
 
 /**
  *
@@ -16,6 +17,7 @@ public class UI extends JFrame {
     private TableTop tp;
     private ButtonsGame btns;
     private MainPanel mp;
+    private Profile profile;
     
     public UI() {
         tp = new TableTop(this);
@@ -24,7 +26,7 @@ public class UI extends JFrame {
         
         add(mp);
         
-        setTitle("El Juego de la Vida");
+        setTitle(GAME_TITLE);
         
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGTH));
@@ -43,10 +45,16 @@ public class UI extends JFrame {
         }
     }
     
-    public void startGame() {
+    public void startGame(Profile profile) {
+        if (this.profile != null && this.profile != profile)
+            tp.reset();
+        
+        this.profile = profile;
+        
         remove(mp);
         
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        setTitle(GAME_TITLE + " (" + profile.name + ")");
+        
         add(btns);        
         add(tp);
         
@@ -58,6 +66,8 @@ public class UI extends JFrame {
         remove(btns);
         remove(tp);
         
+        setTitle(GAME_TITLE);
+        
         add(mp);
         
         revalidate();
@@ -67,16 +77,8 @@ public class UI extends JFrame {
     public TableTop getTp() {
         return tp;
     }
-
-    public void setTp(TableTop tp) {
-        this.tp = tp;
-    }
-
+    
     public ButtonsGame getBtns() {
         return btns;
-    }
-
-    public void setBtns(ButtonsGame btns) {
-        this.btns = btns;
     }
 }
