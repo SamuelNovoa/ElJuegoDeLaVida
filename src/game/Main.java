@@ -3,25 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eljuegodelavida_iagosamuel;
+package game;
 
-import ui.UI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ui.UI;
 
 /**
  *
  * @author a21samuelnc
  */
-public class ElJuegoDeLaVida_IagoSamuel {
+public class Main {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        UI ui = new UI();
+        Universe universe = new Universe();
         
-        ui.run();
+        try {
+            universe.run();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

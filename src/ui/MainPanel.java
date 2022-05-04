@@ -26,6 +26,20 @@ public class MainPanel extends JPanel implements ActionListener {
     
     private Profile[] profiles;
     
+    private class ProfileBtn extends Button {
+        private Profile profile;
+
+        public ProfileBtn(Profile profile) {
+            super(profile.name);
+
+            this.profile = profile;
+        }
+
+        public Profile getProfile() {
+            return profile;
+        }
+    }
+    
     public MainPanel(UI ui) {
         this.ui= ui;
         

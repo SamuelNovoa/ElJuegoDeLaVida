@@ -1,11 +1,10 @@
 package ui;
 
+import static game.Universe.VlcChanges.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-
-import static config.Config.*;
 import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -28,7 +27,7 @@ public class ButtonsGame extends JPanel implements ActionListener {
         
         pause = new Button("Iniciar");
         reset = new Button("Reiniciar");
-        vlc = new Button("Velocidad: x" + ui.getTp().getVlc());
+        vlc = new Button("Velocidad: x1");
         addPattern = new Button("Cargar forma");
         back = new Button("Volver atrás");
         
@@ -58,16 +57,22 @@ public class ButtonsGame extends JPanel implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
     
+    public void setVlc(int newVlc) {
+        vlc.setText("Velocidad: x" + newVlc);
+    }
+    
+    public void setPause(boolean newPause) {
+        pause.setText(newPause ? "Iniciar" : "Pausar");
+    }
+    
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == reset) {
-            ui.getTp().reset();
-            pause.setText("Iniciar");
+            ui.getUniverse().reset();
         } else if (event.getSource() == pause) {
-            pause.setText(ui.getTp().pause() ? "Iniciar" : "Pausar");
+            ui.getUniverse().pause();
         } else if (event.getSource() == vlc) {
-            ui.getTp().changeVelocity();
-            vlc.setText("Velocidad: x" + ui.getTp().getVlc());
+            ui.getUniverse().changeVelocity(VLC_AUTO);
         } else if (event.getSource() == addPattern) {
             //
         } else if (event.getSource() == back) {

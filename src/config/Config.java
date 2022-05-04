@@ -11,7 +11,7 @@ package config;
  */
 public class Config {
     public final static int TP_WIDTH = 120;
-    public final static int TP_HEIGTH = 80;
+    public final static int TP_HEIGHT = 80;
     public final static int DEFAULT_DIFF = 500;
 
     public final static int MIN_WIDTH = 800;
