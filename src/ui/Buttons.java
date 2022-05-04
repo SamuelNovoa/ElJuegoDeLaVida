@@ -13,7 +13,7 @@ import javax.swing.BoxLayout;
  *
  * @author a21iagoof
  */
-public class ButtonsGame extends JPanel implements ActionListener {
+public class Buttons extends JPanel implements ActionListener {
     private UI ui;
     
     private Button pause;
@@ -22,7 +22,7 @@ public class ButtonsGame extends JPanel implements ActionListener {
     private Button back;
     private Button addPattern;
     
-    public ButtonsGame(UI ui) {
+    public Buttons(UI ui) {
         this.ui = ui;
         
         pause = new Button("Iniciar");

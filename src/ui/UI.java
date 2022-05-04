@@ -23,7 +23,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     private Universe universe;
     
     private TableTop tp;
-    private ButtonsGame btns;
+    private Buttons btns;
     private MainPanel mp;
     
     private Profile profile;
@@ -33,7 +33,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         this.universe = universe;
         
         tp = new TableTop(this);
-        btns = new ButtonsGame(this);
+        btns = new Buttons(this);
         generation = new JLabel("Generación: 0");
         
         mp = new MainPanel(this);
@@ -100,7 +100,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         return tp;
     }
     
-    public ButtonsGame getBtns() {
+    public Buttons getBtns() {
         return btns;
     }
 
