@@ -30,6 +30,8 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     private JLabel generation;
     
     public UI(Universe universe) {
+        super(GAME_TITLE);
+        
         this.universe = universe;
         
         tp = new TableTop(this);
@@ -39,8 +41,6 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         mp = new MainPanel(this);
         
         add(mp);
-        
-        setTitle(GAME_TITLE);
         
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGTH));

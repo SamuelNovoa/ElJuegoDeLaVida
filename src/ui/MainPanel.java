@@ -41,6 +41,8 @@ public class MainPanel extends JPanel implements ActionListener {
     }
     
     public MainPanel(UI ui) {
+        super();
+        
         this.ui= ui;
         
         title = new JLabel("El Juego de la Vida");

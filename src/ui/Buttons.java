@@ -23,6 +23,8 @@ public class Buttons extends JPanel implements ActionListener {
     private Button addPattern;
     
     public Buttons(UI ui) {
+        super();
+        
         this.ui = ui;
         
         pause = new Button("Iniciar");
