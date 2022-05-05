@@ -4,12 +4,9 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 
 import static config.Config.*;
-import static game.Universe.VlcChanges.*;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
@@ -60,15 +57,8 @@ public class TableTop extends JPanel {
         
         for (int i = 0; i < TP_HEIGHT; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {
-                //final int row = i;
-                //final int col = j;
-                
                 JButton cell = new JButton();
-                
-                /* cell.addActionListener((ActionEvent event) -> {
-                    ui.getUniverse().changeCell(row, col);
-                }); */
-                
+
                 cell.addMouseListener(new CellListener(i, j));
         
                 cell.setBackground(Color.WHITE);

@@ -8,6 +8,18 @@ import static config.Config.*;
 import static game.Universe.VlcChanges.*;
 
 import java.awt.event.KeyEvent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
+import models.Figure;
 import ui.UI;
 
 /**
@@ -145,6 +157,7 @@ public class Universe {
             for (Cell cell : row)
                 cell.reset();
         
+        highlightSelected(false);
         corners[0] = null;
         corners[1] = null;
     }
@@ -217,6 +230,9 @@ public class Universe {
             case KeyEvent.VK_R:
                 reset();
                 break;
+            case KeyEvent.VK_P:
+                getSelected();
+                break;
             default:
                 break;
         }
@@ -233,8 +249,13 @@ public class Universe {
     }
     
     private void highlightSelected(boolean highlight) {
-        if (corners[1] == null)
+        if (corners[0] == null && corners[1] == null)
+            return;
+        
+        if (corners[0] != null && corners[1] == null)
             cells[corners[0].y][corners[0].x].setSelected(highlight);
+        else if (corners[0] == null && corners[1] != null)
+            cells[corners[1].y][corners[1].x].setSelected(highlight);
         else {
             int minY = corners[0].y < corners[1].y ? corners[0].y : corners[1].y;
             int maxY = corners[0].y > corners[1].y ? corners[0].y : corners[1].y;
@@ -246,5 +267,67 @@ public class Universe {
                 for (int j = minX; j <= maxX; j++)
                     cells[i][j].setSelected(highlight);
         }
+    }
+    
+    private Figure getSelected() {
+        if (corners[0] == null || corners[1] == null)
+            return null;
+        
+        int minY = corners[0].y < corners[1].y ? corners[0].y : corners[1].y;
+        int maxY = corners[0].y > corners[1].y ? corners[0].y : corners[1].y;
+
+        int minX = corners[0].x < corners[1].x ? corners[0].x : corners[1].x;
+        int maxX = corners[0].x > corners[1].x ? corners[0].x : corners[1].x;
+        
+        int sizeY = maxY - minY + 1;
+        int sizeX = maxX - minX + 1;
+        
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(outStream);
+        
+        try {
+            byte b = 0;
+            int remain = 8;
+            
+            data.writeInt(sizeX);
+            for (int i = minY; i <= maxY; i++) {
+                for (int j = minX; j <= maxX; j++) {
+                    if (remain == 0) {
+                        data.writeByte(b);
+                        b = 0;
+                        
+                        remain = 8;
+                    }
+                    
+                    remain--;
+
+                    b = (byte)(b << 1);
+                    if (cells[i][j].isAlive())
+                        b += 1;
+                }
+            }
+            
+            b = (byte)(b << remain);
+            data.writeByte(b);
+        } catch (IOException ex) {
+        }
+        
+        ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
+        DataInputStream inData = new DataInputStream(inStream);
+        
+        try {
+            int size = inData.readInt();
+            System.out.print("Tamaño: " + size + ", datos: ");
+            
+            int r;
+            while ((r = inData.read()) != (byte)(-1)) {
+                System.out.print(Integer.toHexString(r & 0xff));
+            }
+            
+            System.out.println();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

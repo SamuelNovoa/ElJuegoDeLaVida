@@ -6,21 +6,18 @@
 package models;
 
 import DBUtils.SQLModel;
+import java.io.InputStream;
 
 /**
  *
  * @author a21samuelnc
  */
 public class Figure extends SQLModel {
-    public String otra;
+    public InputStream data;
     
     public Figure() {
         super("figures", "id");
-    }
-    
-    public Figure(String otra) {
-        this();
         
-        this.otra = otra;
+        
     }
 }
