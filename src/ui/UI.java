@@ -108,10 +108,10 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     public boolean dispatchKeyEvent(KeyEvent e) {
         switch (e.getID()) {
             case KeyEvent.KEY_PRESSED:
-                tp.keyPressed(e);
+                universe.keyPressed(e);
                 break;
             case KeyEvent.KEY_RELEASED:
-                tp.keyReleased(e);
+                universe.keyReleased(e);
                 break;
             default:
                 break;

@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.Color;
+
 /**
  *
  * @author a21samuelnc
@@ -9,6 +11,7 @@ public class Cell {
     
     private boolean isAlive;
     private boolean isAliveTemp;
+    private boolean isSelected;
     
     private int row;
     private int col;
@@ -52,8 +55,29 @@ public class Cell {
     }
     
     public void changeCell(boolean alive) {
-        isAlive = !isAlive;
+        isAlive = alive;
         
-        universe.getUI().getTp().changeCell(row, col, isAlive);
+        universe.getUI().getTp().changeCellColor(row, col, getCellColor());
+    }
+    
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+        
+        universe.getUI().getTp().changeCellColor(row, col, getCellColor());
+    }
+    
+    private Color getCellColor() {
+        Color color;
+        
+        if (isSelected && isAlive)
+            color = new Color(0x260000);
+        else if (isSelected && !isAlive)
+            color = new Color(0xffb2b2);
+        else if (!isSelected && isAlive)
+            color = Color.BLACK;
+        else
+            color = Color.WHITE;
+        
+        return color;
     }
 }

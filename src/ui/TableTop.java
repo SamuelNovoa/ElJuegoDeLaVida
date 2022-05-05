@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 
@@ -25,6 +27,30 @@ import javax.swing.border.LineBorder;
 public class TableTop extends JPanel {
     private UI ui;
     private JButton[][] cells;
+    
+    private class CellListener extends MouseAdapter {
+        private int row;
+        private int col;
+        
+        public CellListener(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+        
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            switch (e.getButton()) {
+                case MouseEvent.BUTTON1:
+                    ui.getUniverse().changeCell(row, col);
+                    break;
+                case MouseEvent.BUTTON3:
+                    ui.getUniverse().selectCorner(row, col);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     public TableTop(UI ui) {
         super();
@@ -34,14 +60,16 @@ public class TableTop extends JPanel {
         
         for (int i = 0; i < TP_HEIGHT; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {
-                final int row = i;
-                final int col = j;
+                //final int row = i;
+                //final int col = j;
                 
                 JButton cell = new JButton();
                 
-                cell.addActionListener((ActionEvent event) -> {
+                /* cell.addActionListener((ActionEvent event) -> {
                     ui.getUniverse().changeCell(row, col);
-                });
+                }); */
+                
+                cell.addMouseListener(new CellListener(i, j));
         
                 cell.setBackground(Color.WHITE);
                 cell.setBorder(new LineBorder(Color.GRAY, 1, false));
@@ -55,37 +83,8 @@ public class TableTop extends JPanel {
         setLayout(new GridLayout(TP_HEIGHT, TP_WIDTH));
     }
     
-    public void changeCell(int row, int col, boolean isAlive) {
-        cells[row][col].setBackground(isAlive ? Color.BLACK : Color.WHITE);
-    }
-    
-    public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                ui.getUniverse().pause();
-                break;
-            case KeyEvent.VK_COMMA:
-                ui.getUniverse().changeVelocity(VLC_DECREASE);
-                break;
-            case KeyEvent.VK_PERIOD:
-                ui.getUniverse().changeVelocity(VLC_INCREASE);
-                break;
-            case KeyEvent.VK_F:
-                ui.getUniverse().pause(true);
-                break;
-            default:
-                break;
-        }
-    }
-    
-    public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_F:
-                ui.getUniverse().pause(false);
-                break;
-            default:
-                break;
-        }
+    public void changeCellColor(int row, int col, Color color) {
+        cells[row][col].setBackground(color);
     }
     
     public void resize() {

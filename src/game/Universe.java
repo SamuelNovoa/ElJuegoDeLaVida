@@ -5,6 +5,9 @@
 package game;
 
 import static config.Config.*;
+import static game.Universe.VlcChanges.*;
+
+import java.awt.event.KeyEvent;
 import ui.UI;
 
 /**
@@ -24,6 +27,26 @@ public class Universe {
     
     private long generation;
     
+    private Corner[] corners;
+    
+    private class Corner {
+        private final int x;
+        private final int y;
+        
+        public Corner(int y, int x) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+    }
+    
     public enum VlcChanges {
         VLC_INCREASE,
         VLC_DECREASE,
@@ -41,7 +64,9 @@ public class Universe {
         isPaused = true;
         
         generation = 0L;
-
+        
+        corners = new Corner[2];
+        
         for (int i = 0; i < TP_HEIGHT; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {
                 Cell cell = new Cell(this, i, j);
@@ -119,6 +144,9 @@ public class Universe {
         for (Cell[] row : cells)
             for (Cell cell : row)
                 cell.reset();
+        
+        corners[0] = null;
+        corners[1] = null;
     }
     
     public void pause() {
@@ -153,5 +181,70 @@ public class Universe {
     
     public void changeCell(int row, int col) {
         cells[row][col].changeCell();
+    }
+    
+    public void selectCorner(int row, int col) {
+        if (corners[0] == null && corners[1] == null) {
+            corners[0] = new Corner(row, col);
+            
+            highlightSelected(true);
+        } else if (corners[0] != null && corners[1] == null) {
+            corners[1] = new Corner(row, col);
+            
+            highlightSelected(true);
+        } else {
+            highlightSelected(false);
+            
+            corners[0] = null;
+            corners[1] = null;
+        }
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SPACE:
+                pause();
+                break;
+            case KeyEvent.VK_COMMA:
+                changeVelocity(VLC_DECREASE);
+                break;
+            case KeyEvent.VK_PERIOD:
+                changeVelocity(VLC_INCREASE);
+                break;
+            case KeyEvent.VK_F:
+                pause(true);
+                break;
+            case KeyEvent.VK_R:
+                reset();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_F:
+                pause(false);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private void highlightSelected(boolean highlight) {
+        if (corners[1] == null)
+            cells[corners[0].y][corners[0].x].setSelected(highlight);
+        else {
+            int minY = corners[0].y < corners[1].y ? corners[0].y : corners[1].y;
+            int maxY = corners[0].y > corners[1].y ? corners[0].y : corners[1].y;
+
+            int minX = corners[0].x < corners[1].x ? corners[0].x : corners[1].x;
+            int maxX = corners[0].x > corners[1].x ? corners[0].x : corners[1].x;
+
+            for (int i = minY; i <= maxY; i++)
+                for (int j = minX; j <= maxX; j++)
+                    cells[i][j].setSelected(highlight);
+        }
     }
 }
