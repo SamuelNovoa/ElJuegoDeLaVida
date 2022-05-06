@@ -10,15 +10,9 @@ import static game.Universe.VlcChanges.*;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
+import javax.swing.JOptionPane;
 import models.Figure;
 import ui.UI;
 
@@ -213,6 +207,16 @@ public class Universe {
         }
     }
     
+    public void saveFigure() {
+        String name = ui.showDialog("Introduce ");
+        
+        Figure fig = getSelected(name);
+        if (fig == null)
+            return;
+        
+        fig.save();
+    }
+    
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE:
@@ -230,8 +234,8 @@ public class Universe {
             case KeyEvent.VK_R:
                 reset();
                 break;
-            case KeyEvent.VK_P:
-                getSelected();
+            case KeyEvent.VK_G:
+                saveFigure();
                 break;
             default:
                 break;
@@ -269,7 +273,7 @@ public class Universe {
         }
     }
     
-    private Figure getSelected() {
+    private Figure getSelected(String name) {
         if (corners[0] == null || corners[1] == null)
             return null;
         
@@ -311,9 +315,9 @@ public class Universe {
             data.writeByte(b);
         } catch (IOException ex) {
         }
-        
+
         ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
-        DataInputStream inData = new DataInputStream(inStream);
+        /* DataInputStream inData = new DataInputStream(inStream);
         
         try {
             int size = inData.readInt();
@@ -327,7 +331,7 @@ public class Universe {
             System.out.println();
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
-        return null;
+        }*/
+        return new Figure(ui.getProfile(), name, inStream);
     }
 }

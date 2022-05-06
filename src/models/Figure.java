@@ -13,11 +13,24 @@ import java.io.InputStream;
  * @author a21samuelnc
  */
 public class Figure extends SQLModel {
+    public Profile profile;
+    public String name;
+    public int id;
     public InputStream data;
     
     public Figure() {
+        this(null, "None", null);
+    }
+    
+    public Figure(Profile profile, String name, InputStream data) {
         super("figures", "id");
         
+        this.profile = profile;
+        this.name = name;
+        this.data = data;
         
+        id = 2;
     }
+    
+    
 }

@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import models.Profile;
 
 /**
@@ -29,6 +30,8 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     private Profile profile;
     private JLabel generation;
     
+    private boolean blockKeyboard;
+    
     public UI(Universe universe) {
         super(GAME_TITLE);
         
@@ -37,6 +40,8 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         tp = new TableTop(this);
         btns = new Buttons(this);
         generation = new JLabel("Generación: 0");
+        
+        blockKeyboard = false;
         
         mp = new MainPanel(this);
         
@@ -104,8 +109,23 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         return btns;
     }
 
+    public Profile getProfile() {
+        return profile;
+    }
+    
+    public String showDialog(String msg) {
+        blockKeyboard = true;
+        String resp = JOptionPane.showInputDialog("Introduce un nombre para la nueva figura:");
+        blockKeyboard = false;
+        
+        return resp;
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
+        if (blockKeyboard)
+            return false;
+        
         switch (e.getID()) {
             case KeyEvent.KEY_PRESSED:
                 universe.keyPressed(e);

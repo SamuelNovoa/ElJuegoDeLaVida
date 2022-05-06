@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,8 +20,9 @@ public class Buttons extends JPanel implements ActionListener {
     private Button pause;
     private Button reset;
     private Button vlc;
+    private Button loadPattern;
+    private Button savePattern;
     private Button back;
-    private Button addPattern;
     
     public Buttons(UI ui) {
         super();
@@ -30,13 +32,15 @@ public class Buttons extends JPanel implements ActionListener {
         pause = new Button("Iniciar");
         reset = new Button("Reiniciar");
         vlc = new Button("Velocidad: x1");
-        addPattern = new Button("Cargar forma");
+        loadPattern = new Button("Cargar figura");
+        savePattern = new Button("Guardar figura");
         back = new Button("Volver atrás");
         
         pause.addActionListener(this);
         reset.addActionListener(this);
         vlc.addActionListener(this);
-        addPattern.addActionListener(this);
+        loadPattern.addActionListener(this);
+        savePattern.addActionListener(this);
         back.addActionListener(this);
         
         JPanel btns = new JPanel();
@@ -49,7 +53,9 @@ public class Buttons extends JPanel implements ActionListener {
         btns.add(Box.createRigidArea(new Dimension(25, 0)));
         btns.add(vlc);
         btns.add(Box.createRigidArea(new Dimension(25, 0)));
-        btns.add(addPattern);
+        btns.add(loadPattern);
+        btns.add(Box.createRigidArea(new Dimension(25, 0)));
+        btns.add(savePattern);
         btns.add(Box.createRigidArea(new Dimension(25, 0)));
         btns.add(back);
         
@@ -75,8 +81,10 @@ public class Buttons extends JPanel implements ActionListener {
             ui.getUniverse().pause();
         } else if (event.getSource() == vlc) {
             ui.getUniverse().changeVelocity(VLC_AUTO);
-        } else if (event.getSource() == addPattern) {
+        } else if (event.getSource() == loadPattern) {
             //
+        } else if (event.getSource() == savePattern) {
+            ui.getUniverse().saveFigure();
         } else if (event.getSource() == back) {
             ui.endGame();
         }
