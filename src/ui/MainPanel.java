@@ -51,7 +51,7 @@ public class MainPanel extends JPanel implements ActionListener {
         newProfile = new Button("Crear perfil");
         exit = new Button("Salir");
         
-        profiles = getProfiles();
+        profiles = Profile.getAll();
         
         newProfile.addActionListener(this);
         exit.addActionListener(this);
@@ -97,14 +97,5 @@ public class MainPanel extends JPanel implements ActionListener {
         } else if (event.getSource() == exit) {
             System.exit(0);
         }
-    }
-    
-    private Profile[] getProfiles() {
-        return new Profile[] {
-            new Profile("samuel"),
-            new Profile("iago"),
-            new Profile("pruebas"),
-            new Profile("ssss"),
-        };
     }
 }

@@ -5,7 +5,7 @@ use bd_GameOfLife;
 -- ------------------------------------------------------------ DATA BASE
 drop table if exists `profiles`;
 create table if not exists `profiles`(
-	`id` int unsigned not null auto_increment,
+    `id` int unsigned not null auto_increment,
     `name` varchar(30) not null,
     
     primary key (`id`)
@@ -14,17 +14,17 @@ create table if not exists `profiles`(
 
 drop table if exists figures;
 create table if not exists figures(
-	`PROFILE` int unsigned not null,
+	`profile` int unsigned not null,
     `name` varchar(40) not null,
 	`id` int unsigned not null,
     `data` blob not null,
     
-    primary key (`PROFILE`, `id`),
+    primary key (`profile`, `id`),
     
-    foreign key (`PROFILE`) references `profiles` (`id`)
+    foreign key (`profile`) references `profiles` (`id`)
 							on delete cascade
 							on update cascade,
-	index fk_profile (`PROFILE`)
+	index fk_profile (`profile`)
     
 ) engine innodb;
 
@@ -39,16 +39,16 @@ drop view if exists view_data;
 create view view_data
 as
 	select 	p.`id` as ID, 
-			p.`name` as `PROFILE`, 
+			p.`name` as `profile`, 
             count(f.`id`) as No_figures
 	from `profiles` as p left join figures as f
-						on p.`id` = f.`PROFILE`
+						on p.`id` = f.`profile`
 	group by p.`id`;
 
 
 drop view if exists figures_profile;
 create view figures_profile as
-	select	`PROFILE` as `PROFILE`,
+	select	`profile` as `profile`,
 			`name` as Name_figure,
 			`id` as Figure_pos,
 			`data` as Figure
@@ -101,7 +101,7 @@ create trigger insert_figure before insert
     
 		select No_figures into counter
 			from view_data
-            where ID = new.`PROFILE`;
+            where ID = new.`profile`;
             
 		set new.`id` = counter + 1;
         
@@ -113,7 +113,7 @@ create trigger delete_figure after delete
     for each row
     begin
 		insert into movements (actions)
-			values (concat('RMV FIGURE: ', old.`PROFILE`, '-', old.`id`));
+			values (concat('RMV FIGURE: ', old.`profile`, '-', old.`id`));
     end $$
 
 

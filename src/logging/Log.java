@@ -31,7 +31,7 @@ public class Log {
      * @param user Obxeto co perfil do usuario
      */
     public static void writePlayer(Profile user) {
-        write("logUsers.txt", ("User: " + user.name + ", Max. generación: " + user.maxGen));
+        write("logUsers.txt", ("User: " + user.name));
     }
     
     /**
@@ -43,7 +43,7 @@ public class Log {
         FileWriter fichero = null;
         try {
             fichero = new FileWriter(txt, true);
-            fichero.write(msg + "-" + LocalDateTime.from(LocalDateTime.now()) + "\n");
+            fichero.write(msg + "\t(" + LocalDateTime.from(LocalDateTime.now()) + ")\n");
         } catch (Exception e) {
         } finally {
             try {

@@ -7,6 +7,7 @@ package game;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import models.Profile;
 import ui.UI;
 
 /**
@@ -19,6 +20,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Profile prof = Profile.get(1);
+        
+        System.out.println(prof.name);
         Universe universe = new Universe();
         
         try {

@@ -19,11 +19,12 @@ public class Figure extends SQLModel {
     public InputStream data;
     
     public Figure() {
-        this(null, "None", null);
+        table = "figures";
+        primary = "id";
     }
     
     public Figure(Profile profile, String name, InputStream data) {
-        super("figures", "id");
+        this();
         
         this.profile = profile;
         this.name = name;

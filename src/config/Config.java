@@ -10,6 +10,10 @@ package config;
  * @author a21samuelnc
  */
 public class Config {
+    public final static String DB_HOST = "jdbc:mysql://localhost:3306/bd_gameoflife";
+    public final static String DB_USER = "root";
+    public final static String DB_PWD  = "root";
+    
     public final static int TP_WIDTH = 120;
     public final static int TP_HEIGHT = 80;
     public final static int DEFAULT_DIFF = 500;

@@ -10,9 +10,10 @@ import static game.Universe.VlcChanges.*;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import javax.swing.JOptionPane;
+import logging.Log;
 import models.Figure;
 import ui.UI;
 
@@ -208,13 +209,62 @@ public class Universe {
     }
     
     public void saveFigure() {
-        String name = ui.showDialog("Introduce ");
+        String name = ui.showDialog("Introduce un nombre para la figura: ");
         
         Figure fig = getSelected(name);
         if (fig == null)
             return;
         
-        fig.save();
+        spawnFigure(fig, 1, 1);
+        //fig.save();
+    }
+    
+    public void spawnFigure(Figure fig, int col, int row) {
+        DataInputStream data = new DataInputStream(fig.data);
+        
+        try {
+            int cols = data.readInt();
+            final int rows = data.readInt();
+            
+            byte b;
+
+            int cornerCol = col - (cols / 2);
+            int cornerRow = row - (rows / 2);
+            
+            int indexCol = 0;
+            int indexRow = 0;
+
+            while ((b = (byte)data.read()) != -1) {
+                for (int i = 0x80; i > 0x0; i = i >> 1) {
+                    int destRow = cornerRow + indexRow;
+                    int destCol = cornerCol + indexCol;
+                    
+                    if (destRow >= TP_HEIGHT)
+                        destRow -= TP_HEIGHT;
+                    else if (destRow < 0)
+                        destRow += TP_HEIGHT;
+                    
+                    if (destCol >= TP_WIDTH)
+                        destCol -= TP_WIDTH;
+                    else if (destCol < 0)
+                        destCol += TP_WIDTH;
+                    
+                    cells[destRow][destCol].changeCell((b & i) != 0);
+
+                    indexCol++;
+                    if (indexCol >= cols) {
+                        if (indexRow >= rows)
+                            break;
+                        
+                        indexCol = 0;
+                        indexRow++;
+                    }
+                }
+            }
+            
+        } catch (IOException ex) {
+            Log.writeErr(ex.getMessage());
+        }
     }
     
     public void keyPressed(KeyEvent e) {
@@ -235,7 +285,8 @@ public class Universe {
                 reset();
                 break;
             case KeyEvent.VK_G:
-                saveFigure();
+                //saveFigure();
+                Log.writeErr("Probando");
                 break;
             default:
                 break;
@@ -294,6 +345,7 @@ public class Universe {
             int remain = 8;
             
             data.writeInt(sizeX);
+            data.writeInt(sizeY);
             for (int i = minY; i <= maxY; i++) {
                 for (int j = minX; j <= maxX; j++) {
                     if (remain == 0) {
@@ -314,24 +366,11 @@ public class Universe {
             b = (byte)(b << remain);
             data.writeByte(b);
         } catch (IOException ex) {
+            Log.writeErr(ex.getMessage());
         }
 
         ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
-        /* DataInputStream inData = new DataInputStream(inStream);
-        
-        try {
-            int size = inData.readInt();
-            System.out.print("Tamaño: " + size + ", datos: ");
-            
-            int r;
-            while ((r = inData.read()) != (byte)(-1)) {
-                System.out.print(Integer.toHexString(r & 0xff));
-            }
-            
-            System.out.println();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
+
         return new Figure(ui.getProfile(), name, inStream);
     }
 }
