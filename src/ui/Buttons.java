@@ -1,7 +1,7 @@
 package ui;
 
 import static game.Universe.VlcChanges.*;
-
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
@@ -28,6 +28,8 @@ public class Buttons extends JPanel implements ActionListener {
         super();
         
         this.ui = ui;
+        
+        setBackground(new Color(0, 0, 0, 0));
         
         pause = new Button("Iniciar");
         reset = new Button("Reiniciar");

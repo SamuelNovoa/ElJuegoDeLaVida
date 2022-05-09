@@ -10,6 +10,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import java.net.ResponseCache;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -50,7 +51,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGTH));
         
-        setBackground(new Color(0xCFD6A6));
+        getContentPane().setBackground(new Color(0xCFD6A6));
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -115,7 +116,10 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     
     public String showDialog(String msg) {
         blockKeyboard = true;
-        String resp = JOptionPane.showInputDialog("Introduce un nombre para la nueva figura:");
+        String resp;
+        do {
+            resp = JOptionPane.showInputDialog("Introduce un nombre para la nueva figura:");
+        } while (resp.isEmpty());
         blockKeyboard = false;
         
         return resp;

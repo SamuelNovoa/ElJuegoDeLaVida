@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -60,7 +61,7 @@ public class MainPanel extends JPanel implements ActionListener {
         footBtns.add(Box.createRigidArea(new Dimension(10, 0)));
         footBtns.add(exit);
         
-        
+        setBackground(new Color(0, 0, 0, 0));
         footBtns.setLayout(new BoxLayout(footBtns, BoxLayout.X_AXIS));
         
         title.setAlignmentX(CENTER_ALIGNMENT);
@@ -92,7 +93,7 @@ public class MainPanel extends JPanel implements ActionListener {
         if (event.getSource() instanceof ProfileBtn) {
             ui.startGame(((ProfileBtn)event.getSource()).getProfile());
         } else if (event.getSource() == newProfile) {
-            
+            //
         } else if (event.getSource() == exit) {
             System.exit(0);
         }
