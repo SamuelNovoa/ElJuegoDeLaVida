@@ -18,6 +18,14 @@ public class Figure extends SQLModel {
     public int id;
     public InputStream data;
     
+    public static Figure get(int id) {
+        return null;
+    }
+    
+    public static Figure get(String field, String op, String value) {
+        return null;
+    }
+    
     public Figure() {
         table = "figures";
         primary = "id";

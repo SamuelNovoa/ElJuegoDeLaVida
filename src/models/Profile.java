@@ -9,6 +9,7 @@ import DBUtils.SQLMgr;
 import DBUtils.SQLModel;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -18,10 +19,12 @@ public class Profile extends SQLModel {
     public int id;
     public String name;
     
+    public List<Figure> figures;
+    
     public static Profile get(int id) {
         Profile prof = new Profile();
         
-        ResultSet results = SQLMgr.read(table, primary, Integer.toString(id), "=");
+        ResultSet results = SQLMgr.read(table, primary, "=", Integer.toString(id));
         
         try {
             results.next();

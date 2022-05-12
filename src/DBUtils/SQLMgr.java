@@ -27,13 +27,13 @@ public class SQLMgr {
         try {
             updateConn();
             
-            String query = "SELECT * FROM ? WHERE ? ? ?";
+            String query = field == null ?
+                    "SELECT * FROM " + table :
+                    "SELECT * FROM " + table + " WHERE " + field + " " + op + " " + data + ";";
             
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, table);
-            stmt.setString(2, field);
-            stmt.setString(3, op);
-            stmt.setString(4, data);
+            System.out.println(query);
+            
+            Statement stmt = conn.createStatement();
             
             rset = stmt.executeQuery(query);
         } catch (SQLException ex) {
@@ -57,16 +57,11 @@ public class SQLMgr {
         try {
             updateConn();
             
-            String query = "DELETE FROM ? WHERE ? = ?";
+            String query = "DELETE FROM " + table + " WHERE " + primary + " = " + id + ";";
             
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, table);
-            stmt.setString(2, primary);
-            stmt.setInt(3, id);
+            Statement stmt = conn.createStatement();
 
-            result = stmt.executeUpdate() > 0;
-            
-            
+            result = stmt.executeUpdate(query) > 0;
         } catch (SQLException ex) {
             result = false;
             System.out.println(ex.getMessage());
