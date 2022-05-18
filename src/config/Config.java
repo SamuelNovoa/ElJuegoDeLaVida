@@ -24,4 +24,6 @@ public class Config {
     public final static int MAX_VLC = 32;
     
     public final static String GAME_TITLE = "El Juego de la Vida";
+    
+    public final static String INFO = "\t\t\t\t\t\tCONTROLES" + "\n\t> Pulsar espacio: Iniciar/Pausar" + "\n\t> Pulsar R: Reiniciar tablero";
 }

@@ -10,7 +10,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
-import java.net.ResponseCache;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,6 +26,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     private TableTop tp;
     private Buttons btns;
     private MainPanel mp;
+    private FiguresPanel fp;
     
     private Profile profile;
     private JLabel generation;
@@ -41,6 +41,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         tp = new TableTop(this);
         btns = new Buttons(this);
         generation = new JLabel("Generación: 0");
+        fp = new FiguresPanel(this);
         
         blockKeyboard = false;
         
@@ -114,15 +115,28 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         return profile;
     }
     
+    public FiguresPanel getFiguresPanel() {
+        return fp;
+    }
+    
+    public MainPanel getMainPanel() {
+        return mp;
+    }
+    
     public String showDialog(String msg) {
         blockKeyboard = true;
         String resp;
         do {
-            resp = JOptionPane.showInputDialog("Introduce un nombre para la nueva figura:");
+            resp = JOptionPane.showInputDialog(msg);
         } while (resp.isEmpty());
         blockKeyboard = false;
         
         return resp;
+    }
+    
+    public void refresh() {
+        revalidate();
+        repaint();
     }
 
     @Override

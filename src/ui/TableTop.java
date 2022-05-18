@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+import models.Figure;
 
 /**
  * TODO:
@@ -25,6 +26,8 @@ public class TableTop extends JPanel {
     private UI ui;
     private JButton[][] cells;
     
+    public static boolean loadFigure;
+    
     private class CellListener extends MouseAdapter {
         private int row;
         private int col;
@@ -38,7 +41,10 @@ public class TableTop extends JPanel {
         public void mouseClicked(MouseEvent e) {
             switch (e.getButton()) {
                 case MouseEvent.BUTTON1:
-                    ui.getUniverse().changeCell(row, col);
+                    if (loadFigure) {
+                        
+                    } else
+                        ui.getUniverse().changeCell(row, col);
                     break;
                 case MouseEvent.BUTTON3:
                     ui.getUniverse().selectCorner(row, col);
@@ -54,6 +60,7 @@ public class TableTop extends JPanel {
         
         this.ui = ui;
         cells = new JButton[TP_HEIGHT][TP_WIDTH];
+        loadFigure = false;
         
         for (int i = 0; i < TP_HEIGHT; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {

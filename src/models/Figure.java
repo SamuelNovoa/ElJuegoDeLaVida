@@ -5,8 +5,10 @@
  */
 package models;
 
+import DBUtils.SQLMgr;
 import DBUtils.SQLModel;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  *
@@ -41,5 +43,12 @@ public class Figure extends SQLModel {
         id = 2;
     }
     
+    public void save() {
+        SQLMgr.insert("figures", name, profile.id, data);
+    }
     
+    
+    public void load() {
+        
+    }
 }

@@ -6,15 +6,21 @@ package game;
 
 import static config.Config.*;
 import static game.Universe.VlcChanges.*;
-
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.border.TitledBorder;
+import static javax.swing.border.TitledBorder.LEADING;
 import logging.Log;
 import models.Figure;
+import models.Profile;
+import ui.FiguresPanel;
 import ui.UI;
 
 /**
@@ -215,8 +221,9 @@ public class Universe {
         if (fig == null)
             return;
         
-        spawnFigure(fig, 1, 1);
-        //fig.save();
+//        spawnFigure(fig, 1, 1);
+        fig.save();
+//        ui.getFiguresPanel().addFigure(new FiguresBtns(fig, ui));
     }
     
     public void spawnFigure(Figure fig, int col, int row) {
@@ -365,12 +372,42 @@ public class Universe {
             
             b = (byte)(b << remain);
             data.writeByte(b);
+            
         } catch (IOException ex) {
             Log.writeErr(ex.getMessage());
         }
-
-        ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
-
-        return new Figure(ui.getProfile(), name, inStream);
+        InputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
+        
+        return new Figure(ui.getProfile(), name, inStream); 
+    }
+    
+    
+    public void loadFigures() {
+        new FiguresPanel(ui).loadFigure();
+    }
+    
+    
+    public void newProfile() {
+        String name;
+        do {
+            name = ui.showDialog("Introduce el nombre del jugador: ");
+        } while (name.isEmpty());
+        
+        Profile prof = new Profile(name, ui.getMainPanel().getNextProfileID());
+        prof.save();
+        ui.getMainPanel().addProfile(prof);
+        ui.refresh();
+    }
+    
+    public void infoPanel() {
+        JDialog info = new JDialog();
+        JLabel infoLabel = new JLabel();
+        info.setTitle("Información");
+        info.setSize(350, 250);
+        
+        infoLabel.setText(INFO);
+        
+        info.add(infoLabel);
+        info.setVisible(true);
     }
 }

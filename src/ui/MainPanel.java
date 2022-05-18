@@ -20,9 +20,12 @@ import models.Profile;
 public class MainPanel extends JPanel implements ActionListener {
     private UI ui;
     
+    private JPanel footBtns;
+    
     private JLabel title;
     
     private Button newProfile;
+    private Button info;
     private Button exit;
     
     private Profile[] profiles;
@@ -49,15 +52,19 @@ public class MainPanel extends JPanel implements ActionListener {
         title = new JLabel("El Juego de la Vida");
         
         newProfile = new Button("Crear perfil");
-        exit = new Button("Salir");
+        info = new Button("Instruccións");
+        exit = new Button("Saír");
         
         profiles = Profile.getAll();
         
         newProfile.addActionListener(this);
+        info.addActionListener(this);
         exit.addActionListener(this);
         
-        JPanel footBtns = new JPanel();
+        footBtns = new JPanel();
         footBtns.add(newProfile);
+        footBtns.add(Box.createRigidArea(new Dimension(10, 0)));
+        footBtns.add(info);
         footBtns.add(Box.createRigidArea(new Dimension(10, 0)));
         footBtns.add(exit);
         
@@ -82,10 +89,28 @@ public class MainPanel extends JPanel implements ActionListener {
             add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
-        add(Box.createRigidArea(new Dimension(0, 200)));
+//        add(Box.createRigidArea(new Dimension(0, 200)));
         add(footBtns);
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    }
+    
+    public void addProfile(Profile profile) {
+        remove(footBtns);
+        
+        ProfileBtn btn = new ProfileBtn(profile);
+        btn.addActionListener(this);
+        btn.setAlignmentX(CENTER_ALIGNMENT);
+
+        add(btn);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        
+        add(footBtns);
+    }
+    
+    private int countNewProfiles = 1;
+    public int getNextProfileID() {
+        return profiles[profiles.length-1].id + countNewProfiles++;
     }
 
     @Override
@@ -93,7 +118,9 @@ public class MainPanel extends JPanel implements ActionListener {
         if (event.getSource() instanceof ProfileBtn) {
             ui.startGame(((ProfileBtn)event.getSource()).getProfile());
         } else if (event.getSource() == newProfile) {
-            //
+            ui.getUniverse().newProfile();
+        } else if (event.getSource() == info) {
+            ui.getUniverse().infoPanel();
         } else if (event.getSource() == exit) {
             System.exit(0);
         }

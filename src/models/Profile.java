@@ -70,4 +70,16 @@ public class Profile extends SQLModel {
         
         this.name = name;
     }
+    
+    public Profile(String name, int id) {
+        this();
+        
+        this.name = name;
+        this.id = id;
+    }
+    
+    
+    public void save() {
+        SQLMgr.insert(table, name);
+    }
 }

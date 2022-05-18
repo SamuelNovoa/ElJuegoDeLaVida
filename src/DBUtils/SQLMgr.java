@@ -7,8 +7,24 @@ package DBUtils;
 
 
 import static config.Config.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import models.Figure;
+import models.Profile;
 
 /**
  *
@@ -78,4 +94,114 @@ public class SQLMgr {
         if (conn == null || conn.isClosed())
             conn = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
     }
+    
+    
+    
+    
+    
+    
+    /**
+     * Guarda SOLO en figuras
+     * @param table
+     * @param name
+     * @param profile
+     * @param data 
+     */
+    public static void insert(String table, String name, int profile, InputStream data) {
+        System.out.println("SQPMgr.insert-->" + data);
+        String cons = "insert into figures (profile, name, data) values (?,?,?)";
+        Connection con = null;
+        
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
+            PreparedStatement ps = con.prepareStatement(cons);
+            ps.setInt(1, profile);
+            ps.setString(2, name);
+            ps.setBlob(3, data);
+            
+            ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.toString());
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.toString());
+            }
+        }
+    }
+    
+    
+    public static void insert(String table, String name) {
+        String cons = "INSERT INTO profiles (name) VALUES (?)";
+        Connection con = null;
+        
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
+            PreparedStatement ps = con.prepareStatement(cons);
+//            ps.setString(1, table);
+            ps.setString(1, name);
+            
+            ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.toString());
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.toString());
+            }
+        }
+    }
+    
+    
+    /**
+     * Lee SOLO figuras
+     * @param prf
+     * @param table
+     * @return 
+     */
+    public static List<Figure> select(Profile prf, String table) {
+        List<Figure> list = new ArrayList<>();
+        String cons = "select name,data from " + table + " where profile = " + prf.id;
+        Connection con = null;
+        
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(cons);
+            
+            int i = 0;
+            while (rs.next()) {
+                System.out.println(i++);
+                list.add(new Figure(prf, rs.getString(1), rs.getBinaryStream(2)));
+            }
+            
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.toString());
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.toString());
+            }
+        }
+        
+        return list;
+    }
+    
+    
+    
 }

@@ -84,7 +84,7 @@ public class Buttons extends JPanel implements ActionListener {
         } else if (event.getSource() == vlc) {
             ui.getUniverse().changeVelocity(VLC_AUTO);
         } else if (event.getSource() == loadPattern) {
-            //
+            ui.getUniverse().loadFigures();
         } else if (event.getSource() == savePattern) {
             ui.getUniverse().saveFigure();
         } else if (event.getSource() == back) {
