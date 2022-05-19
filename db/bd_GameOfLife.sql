@@ -55,11 +55,6 @@ create view figures_profile as
 		from figures;
 
 
--- ------------------------------------------------------------ DEFAULT DATA
-insert into `profiles` (`name`)
-	values ('Incio sin registro');
-
-
 -- ------------------------------------------------------------  TRIGGERS
 delimiter $$
 
@@ -117,6 +112,12 @@ create trigger delete_figure after delete
     end $$
 
 
+-- ------------------------------------------------------------ DEFAULT DATA
+insert into `profiles` (`name`)
+	values ('Incio sin registro');
 
+insert into figures (profile, name, data) 
+	values 	(1, '1050 Gens', 0x000000060000000600c48c2000),
+			(1, '250 Gens', 0x0000001100000011000030e19800c000001c000000000093124949246480000000001c000001800cc386000000);
 
 

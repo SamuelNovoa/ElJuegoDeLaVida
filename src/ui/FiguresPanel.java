@@ -59,9 +59,8 @@ public class FiguresPanel extends JDialog {
     public FiguresPanel(UI ui) {
         this.ui = ui;
         setTitle("Cargar figura");
-//        setSize(350, 50);
-//        setLocationRelativeTo(null);        
-//        setDefaultCloseOperation();
+        
+        
         panel = new JPanel();
         figureList = new ArrayList<>();
     }
@@ -72,8 +71,8 @@ public class FiguresPanel extends JDialog {
         
         
         scrollPane = new JScrollPane(panel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setBounds(30, 30, 300, 250);
         scrollPane.setSize(300, 250);
         contentPane = new JPanel(null);
@@ -100,8 +99,7 @@ public class FiguresPanel extends JDialog {
     }
     
     public void closePanel() {
-        
-//        setVisible(false);
+        setVisible(false);
     }
     
 }

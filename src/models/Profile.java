@@ -78,8 +78,9 @@ public class Profile extends SQLModel {
         this.id = id;
     }
     
-    
     public void save() {
         SQLMgr.insert(table, name);
     }
+    
+    
 }

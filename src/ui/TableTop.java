@@ -26,7 +26,7 @@ public class TableTop extends JPanel {
     private UI ui;
     private JButton[][] cells;
     
-    public static boolean loadFigure;
+    private Figure loadFigure;
     
     private class CellListener extends MouseAdapter {
         private int row;
@@ -41,8 +41,9 @@ public class TableTop extends JPanel {
         public void mouseClicked(MouseEvent e) {
             switch (e.getButton()) {
                 case MouseEvent.BUTTON1:
-                    if (loadFigure) {
-                        
+                    if (loadFigure != null) {
+                        ui.getUniverse().spawnFigure(loadFigure, col, row);
+                        loadFigure = null;
                     } else
                         ui.getUniverse().changeCell(row, col);
                     break;
@@ -60,7 +61,7 @@ public class TableTop extends JPanel {
         
         this.ui = ui;
         cells = new JButton[TP_HEIGHT][TP_WIDTH];
-        loadFigure = false;
+        loadFigure = null;
         
         for (int i = 0; i < TP_HEIGHT; i++) {
             for (int j = 0; j < TP_WIDTH; j++) {
@@ -82,6 +83,10 @@ public class TableTop extends JPanel {
     
     public void changeCellColor(int row, int col, Color color) {
         cells[row][col].setBackground(color);
+    }
+
+    public void setLoadFigure(Figure loadFigure) {
+        this.loadFigure = loadFigure;
     }
     
     public void resize() {

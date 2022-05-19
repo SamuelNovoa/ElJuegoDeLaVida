@@ -1,10 +1,13 @@
 package ui;
 
+import DBUtils.SQLMgr;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -17,7 +20,7 @@ import models.Profile;
  *
  * @author a21iagoof
  */
-public class MainPanel extends JPanel implements ActionListener {
+public class MainPanel extends JPanel implements ActionListener, MouseListener {
     private UI ui;
     
     private JPanel footBtns;
@@ -29,6 +32,8 @@ public class MainPanel extends JPanel implements ActionListener {
     private Button exit;
     
     private Profile[] profiles;
+
+
     
     private class ProfileBtn extends Button {
         private Profile profile;
@@ -70,6 +75,7 @@ public class MainPanel extends JPanel implements ActionListener {
         
         setBackground(new Color(0, 0, 0, 0));
         footBtns.setLayout(new BoxLayout(footBtns, BoxLayout.X_AXIS));
+        footBtns.setBackground(new Color(0, 0, 0, 0));
         
         title.setAlignmentX(CENTER_ALIGNMENT);
         title.setFont(new Font("Linux Libertine Display G", Font.ITALIC, 41));
@@ -83,6 +89,7 @@ public class MainPanel extends JPanel implements ActionListener {
         for (Profile profile : profiles) {
             ProfileBtn btn = new ProfileBtn(profile);
             btn.addActionListener(this);
+            btn.addMouseListener(this);
             btn.setAlignmentX(CENTER_ALIGNMENT);
             
             add(btn);
@@ -100,12 +107,17 @@ public class MainPanel extends JPanel implements ActionListener {
         
         ProfileBtn btn = new ProfileBtn(profile);
         btn.addActionListener(this);
+        btn.addMouseListener(this);
         btn.setAlignmentX(CENTER_ALIGNMENT);
 
         add(btn);
         add(Box.createRigidArea(new Dimension(0, 10)));
         
         add(footBtns);
+    }
+    
+    public void removeProfile(Profile prof) {
+        
     }
     
     private int countNewProfiles = 1;
@@ -125,4 +137,45 @@ public class MainPanel extends JPanel implements ActionListener {
             System.exit(0);
         }
     }
+    
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON3:
+                System.out.println("Borrar");
+                Profile prof = ((ProfileBtn)e.getSource()).getProfile();
+                
+                if (prof.id != 1) {
+                    // Mensaje confirmacion
+//                    ((ProfileBtn)e.getSource()).getProfile().delete();
+                    remove((ProfileBtn)e.getSource());
+                    ui.refresh();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
+        @Override
+    public void mousePressed(MouseEvent arg0) {
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {
+        
+    }
 }
+

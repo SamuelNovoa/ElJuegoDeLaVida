@@ -31,8 +31,8 @@ public class FiguresBtns extends Button implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        ui.getUniverse().spawnFigure(figure, 10, 10);
-//        ui.getFiguresPanel().closePanel();
+        ui.getTp().setLoadFigure(figure);
+        ui.getFiguresPanel().closePanel();
     }
     
     
