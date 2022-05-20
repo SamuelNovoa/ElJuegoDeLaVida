@@ -33,7 +33,7 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
     
     private Profile[] profiles;
 
-
+    private int profilesCount;
     
     private class ProfileBtn extends Button {
         private Profile profile;
@@ -99,21 +99,27 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
 //        add(Box.createRigidArea(new Dimension(0, 200)));
         add(footBtns);
         
+        profilesCount = profiles.length;
+        
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
     
     public void addProfile(Profile profile) {
-        remove(footBtns);
-        
-        ProfileBtn btn = new ProfileBtn(profile);
-        btn.addActionListener(this);
-        btn.addMouseListener(this);
-        btn.setAlignmentX(CENTER_ALIGNMENT);
+        if (profilesCount < 10) {
+            remove(footBtns);
 
-        add(btn);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        
-        add(footBtns);
+            ProfileBtn btn = new ProfileBtn(profile);
+            btn.addActionListener(this);
+            btn.addMouseListener(this);
+            btn.setAlignmentX(CENTER_ALIGNMENT);
+
+            add(btn);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+
+            add(footBtns);
+            
+            profilesCount++;
+        }
     }
     
     public void removeProfile(Profile prof) {
@@ -145,11 +151,10 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
             case MouseEvent.BUTTON3:
                 System.out.println("Borrar");
                 Profile prof = ((ProfileBtn)e.getSource()).getProfile();
-                
-                if (prof.id != 1) {
-                    // Mensaje confirmacion
-//                    ((ProfileBtn)e.getSource()).getProfile().delete();
+                String ans = ui.showDialog("Escriba CONFIRMAR para borrar el perfil").toUpperCase();
+                if ((ans.equals("CONFIRMAR")) && (prof.id != 1)) {
                     remove((ProfileBtn)e.getSource());
+//                    prof.delete();
                     ui.refresh();
                 }
                 break;

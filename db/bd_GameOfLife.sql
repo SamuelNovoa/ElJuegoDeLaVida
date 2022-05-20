@@ -58,6 +58,18 @@ create view figures_profile as
 -- ------------------------------------------------------------  TRIGGERS
 delimiter $$
 
+drop trigger if exists max_users $$
+create trigger max_users before insert
+on `profiles`
+for each row
+begin
+	if (select count(*) from `profiles`) = 10 then
+			signal sqlstate '45001'
+            set message_text = "Máximo número de perfiles alcanzados.";
+		end if;
+end $$
+
+
 drop trigger if exists insert_profile $$
 create trigger insert_profile after insert
 	on `profiles`
@@ -111,6 +123,8 @@ create trigger delete_figure after delete
 			values (concat('RMV FIGURE: ', old.`profile`, '-', old.`id`));
     end $$
 
+
+delimiter ;
 
 -- ------------------------------------------------------------ DEFAULT DATA
 insert into `profiles` (`name`)

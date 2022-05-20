@@ -7,8 +7,6 @@ package DBUtils;
 
 
 import static config.Config.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,10 +17,8 @@ import java.sql.ResultSet;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import logging.Log;
 import models.Figure;
 import models.Profile;
 
@@ -148,17 +144,13 @@ public class SQLMgr {
             ps.setString(1, name);
             
             ps.executeUpdate();
-            
+            con.close();
         } catch (SQLException ex) {
             System.out.println(ex.toString());
+            Log.writeErr(ex.getMessage());
         } catch (ClassNotFoundException e) {
             System.out.println(e.toString());
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                System.out.println(ex.toString());
-            }
+            Log.writeErr(e.getMessage());
         }
     }
     

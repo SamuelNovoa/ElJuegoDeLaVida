@@ -1,26 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ui;
 
 import DBUtils.SQLMgr;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import models.Figure;
-import models.Profile;
+import javax.swing.*;
 
 /**
  *
@@ -36,26 +25,6 @@ public class FiguresPanel extends JDialog {
     private JPanel contentPane;
     private JScrollPane scrollPane;
     
-    private LoadPosition loadPosition;
-    
-    private class LoadPosition {
-        private final int x;
-        private final int y;
-        
-        public LoadPosition(int y, int x) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-    }
-    
     public FiguresPanel(UI ui) {
         this.ui = ui;
         setTitle("Cargar figura");
@@ -66,7 +35,7 @@ public class FiguresPanel extends JDialog {
     }
     
     public void loadFigure() {
-        figureList = SQLMgr.select(ui.getProfile(), "figures"); // como le cada vez que se invoca, va repitiendo los datos, cambiar
+        figureList = SQLMgr.select(ui.getProfile(), "figures");
         getButtons();
         
         

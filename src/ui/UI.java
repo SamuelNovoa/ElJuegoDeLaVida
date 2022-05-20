@@ -14,6 +14,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import logging.Log;
 import models.Profile;
 
 /**
@@ -128,6 +129,10 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         String resp;
         do {
             resp = JOptionPane.showInputDialog(msg);
+            if (resp == null) {
+                resp = "";
+                break;
+            }
         } while (resp.isEmpty());
         blockKeyboard = false;
         
