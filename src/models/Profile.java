@@ -9,7 +9,9 @@ import DBUtils.SQLMgr;
 import DBUtils.SQLModel;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,17 +26,10 @@ public class Profile extends SQLModel {
     public static Profile get(int id) {
         Profile prof = new Profile();
         
-        ResultSet results = SQLMgr.read(table, primary, "=", Integer.toString(id));
+        List<Map<String, Object>> results = SQLMgr.read(table, primary, "=", Integer.toString(id));
         
-        try {
-            results.next();
-            
-            prof.id = results.getInt("id");
-            prof.name = results.getString("name");
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            prof = null;
-        }
+        prof.id = ((Long)results.get(0).get("id")).intValue();
+        prof.name = results.get(0).get("name").toString();
         
         return prof;
     }
@@ -42,19 +37,13 @@ public class Profile extends SQLModel {
     public static Profile[] getAll() {
         ArrayList<Profile> profiles = new ArrayList<>();
         
-        ResultSet results = SQLMgr.read(table);
+        List<Map<String, Object>> results = SQLMgr.read(table);
         
-        try {
-            while (results.next()) {
-                Profile prof = new Profile();
-                
-                prof.id = results.getInt("id");
-                prof.name = results.getString("name");
-                
-                profiles.add(prof);
-            }
-        } catch (SQLException ex) {
-            profiles = null;
+        for (Map<String, Object> row : results) {
+            Profile prof = new Profile();
+            
+            prof.id = ((Long)row.get("id")).intValue();
+            prof.name = row.get("name").toString();
         }
         
         return profiles.toArray(new Profile[profiles.size()]);
@@ -69,6 +58,7 @@ public class Profile extends SQLModel {
         this();
         
         this.name = name;
+        this.id = 0;
     }
     
     public Profile(String name, int id) {
@@ -79,8 +69,15 @@ public class Profile extends SQLModel {
     }
     
     public void save() {
-        SQLMgr.insert(table, name);
+        Map<String, Object> tableData = new HashMap<>();
+        
+        if (id != 0)
+            tableData.put("id", id);
+        
+        tableData.put("name", name);
+        
+        int newId = SQLMgr.update(table, primary, id, tableData);
+        if (id == 0)
+            id = newId;
     }
-    
-    
 }

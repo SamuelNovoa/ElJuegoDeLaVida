@@ -14,10 +14,10 @@ create table if not exists `profiles`(
 
 drop table if exists figures;
 create table if not exists figures(
+  `id` int unsigned not null,
 	`profile` int unsigned not null,
-    `name` varchar(40) not null,
-	`id` int unsigned not null,
-    `data` blob not null,
+  `name` varchar(40) not null,
+  `data` blob not null,
     
     primary key (`profile`, `id`),
     

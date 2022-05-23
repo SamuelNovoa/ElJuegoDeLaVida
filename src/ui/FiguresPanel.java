@@ -3,6 +3,7 @@ package ui;
 import DBUtils.SQLMgr;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JDialog;
@@ -35,7 +36,7 @@ public class FiguresPanel extends JDialog {
     }
     
     public void loadFigure() {
-        figureList = SQLMgr.select(ui.getProfile(), "figures");
+        figureList = Arrays.asList(Figure.get(ui.getProfile().id));
         getButtons();
         
         

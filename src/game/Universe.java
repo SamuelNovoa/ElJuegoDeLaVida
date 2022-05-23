@@ -393,7 +393,7 @@ public class Universe {
             name = ui.showDialog("Introduce el nombre del jugador: ");
         } while (name.isEmpty());
         
-        Profile prof = new Profile(name, ui.getMainPanel().getNextProfileID());
+        Profile prof = new Profile(name);
         prof.save();
         ui.getMainPanel().addProfile(prof);
         ui.refresh();

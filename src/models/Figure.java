@@ -8,6 +8,8 @@ package models;
 import DBUtils.SQLMgr;
 import DBUtils.SQLModel;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -19,11 +21,15 @@ public class Figure extends SQLModel {
     public int id;
     public InputStream data;
     
-    public static Figure get(int id) {
+    public static Figure[] get(int id) {
         return null;
     }
     
-    public static Figure get(String field, String op, String value) {
+    public static Figure[] get(String field, String op, String value) {
+        return null;
+    }
+    
+    public static Figure[] getAll() {
         return null;
     }
     
@@ -43,11 +49,15 @@ public class Figure extends SQLModel {
     }
     
     public void save() {
-        SQLMgr.insert("figures", name, profile.id, data);
-    }
-    
-    
-    public void load() {
+        Map<String, Object> tableData = new HashMap<>();
         
+        if (id != 0)
+            tableData.put("id", id);
+        
+        tableData.put("profile", profile);
+        tableData.put("name", name);
+        tableData.put("data", data);
+        
+        SQLMgr.update(table, primary, id, tableData);
     }
 }

@@ -7,20 +7,16 @@ package DBUtils;
 
 
 import static config.Config.*;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import logging.Log;
-import models.Figure;
-import models.Profile;
 
 /**
  *
@@ -29,12 +25,12 @@ import models.Profile;
 public class SQLMgr {
     private static Connection conn;
     
-    public static ResultSet read(String table) {
+    public static List<Map<String, Object>> read(String table) {
         return read(table, null, null, null);
     }
     
-    public static ResultSet read(String table, String field, String op, String data) {
-        ResultSet rset = null;
+    public static List<Map<String, Object>> read(String table, String field, String op, String data) {
+        List<Map<String, Object>> result = new ArrayList<>();
         
         try {
             updateConn();
@@ -47,20 +43,41 @@ public class SQLMgr {
             
             Statement stmt = conn.createStatement();
             
-            rset = stmt.executeQuery(query);
+            ResultSet rset = stmt.executeQuery(query);
+            
+            
+            while (rset.next()) {
+                Map<String, Object> row = new HashMap<>();
+                for (int i = 1; i <= rset.getMetaData().getColumnCount(); i++) {
+                    String col = rset.getMetaData().getColumnName(i);
+                    
+                    row.put(col, rset.getObject(col));
+                }
+                
+                result.add(row);
+            }
+            
+            for (Map<String, Object> row : result) {
+                for (Map.Entry<String, Object> col : row.entrySet()) {
+                    System.out.println(col.getKey() + ": " + col.getValue().toString());
+                }
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         
-        return rset;
+        return result;
     }
     
-    public static boolean update(String table, String primary, int id, String[][] data) {
-        if (exists(table, primary, id))
+    public static boolean exists(String table, String primary, int id) {
+        return false;
+    }
+    
+    public static int update(String table, String primary, int id, Map<String, Object> data) {
+        if (id != 0 && exists(table, primary, id))
             delete(table, primary, id);
         
-        
-        return true;
+        return insert(table, data);
     }
     
     public static boolean delete(String table, String primary, int id) {
@@ -82,118 +99,44 @@ public class SQLMgr {
         return result;
     }
     
-    public static boolean exists(String table, String primary, int id) {
-        return false;
+    private static int insert(String table, Map<String, Object> data) {
+        int result = 0;
+        
+        try {
+            updateConn();
+            
+            String cols = "";
+            String values = "";
+            for (Map.Entry<String,Object> entry : data.entrySet()) {
+                if (!cols.equals("")) {
+                    cols += ", ";
+                    values += ", ";
+                }
+                
+                cols += "\"" + entry.getKey() +"\"";
+                values += "\"" + entry.getValue().toString() + "\"";
+            }
+            
+            System.out.println(cols);
+            System.out.println(values);
+            
+            String query = "INSERT INTO " + table + " (" + cols + ") VALUES (" + values + ");";
+            
+            Statement stmt = conn.createStatement();
+            
+            result = stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            
+            System.out.println(query);
+            System.out.println(result);
+        } catch (SQLException ex) {
+            Log.writeErr(ex.getMessage());
+        }
+        
+        return result;
     }
     
     private static void updateConn() throws SQLException {
         if (conn == null || conn.isClosed())
             conn = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
     }
-    
-    
-    
-    
-    
-    
-    /**
-     * Guarda SOLO en figuras
-     * @param table
-     * @param name
-     * @param profile
-     * @param data 
-     */
-    public static void insert(String table, String name, int profile, InputStream data) {
-        System.out.println("SQPMgr.insert-->" + data);
-        String cons = "insert into figures (profile, name, data) values (?,?,?)";
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
-            PreparedStatement ps = con.prepareStatement(cons);
-            ps.setInt(1, profile);
-            ps.setString(2, name);
-            ps.setBlob(3, data);
-            
-            ps.executeUpdate();
-            
-        } catch (SQLException ex) {
-            System.out.println(ex.toString());
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.toString());
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                System.out.println(ex.toString());
-            }
-        }
-    }
-    
-    
-    public static void insert(String table, String name) {
-        String cons = "INSERT INTO profiles (name) VALUES (?)";
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
-            PreparedStatement ps = con.prepareStatement(cons);
-//            ps.setString(1, table);
-            ps.setString(1, name);
-            
-            ps.executeUpdate();
-            con.close();
-        } catch (SQLException ex) {
-            System.out.println(ex.toString());
-            Log.writeErr(ex.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.toString());
-            Log.writeErr(e.getMessage());
-        }
-    }
-    
-    
-    /**
-     * Lee SOLO figuras
-     * @param prf
-     * @param table
-     * @return 
-     */
-    public static List<Figure> select(Profile prf, String table) {
-        List<Figure> list = new ArrayList<>();
-        String cons = "select name,data from " + table + " where profile = " + prf.id;
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(cons);
-            
-            int i = 0;
-            while (rs.next()) {
-                System.out.println(i++);
-                list.add(new Figure(prf, rs.getString(1), rs.getBinaryStream(2)));
-            }
-            
-            
-        } catch (SQLException ex) {
-            System.out.println(ex.toString());
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.toString());
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                System.out.println(ex.toString());
-            }
-        }
-        
-        return list;
-    }
-    
-    
-    
 }
