@@ -70,6 +70,33 @@ public class Figure implements SQLModel {
     }
     
     /**
+     * Método para obter unha figura a partir da cadea hexadecimal que a define.
+     * 
+     * @param hexa A cadea hexadecimal que define a figura
+     * @return A figura definida pola cadea hexadecimal
+     */
+    public static Figure getFromHexa(String hexa) {
+        Figure figure = null;
+        
+        try {
+            hexa = hexa.replaceAll(" ", "").replaceAll("0x", "").toUpperCase();
+            byte[] data = new byte[hexa.length() / 2];
+
+            for (int i = 0; i < hexa.length() / 2; i++) {
+                String byteStr = hexa.substring(i * 2, i * 2 + 2);
+
+                data[i] = (byte)Integer.parseInt(byteStr, 16);
+            }
+
+            figure = new Figure();
+            figure.data = data;
+        } catch (NumberFormatException ex) {
+        }
+        
+        return figure;
+    }
+    
+    /**
      * Construtor vacío da figura.
      */
     public Figure() { }
@@ -86,6 +113,23 @@ public class Figure implements SQLModel {
         this.id = 0;
         this.name = name;
         this.data = data;
+    }
+    
+    /**
+     * Método para obter a cadea hexadecimal que define unha figura.
+     * 
+     * @return A cadea hexadecimal que define a figura
+     */
+    public String getHexa() {
+        String hexa = "0x";
+        
+        for (int i = 0; i < data.length; i++) {
+            byte b = data[i];
+            
+            hexa += String.format("%02X", b);
+        }
+        
+        return hexa;
     }
     
     @Override
