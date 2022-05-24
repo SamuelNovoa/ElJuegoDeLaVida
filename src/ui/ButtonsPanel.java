@@ -47,6 +47,7 @@ public class ButtonsPanel extends JPanel implements ActionListener {
         JPanel btns = new JPanel();
         btns.setLayout(new BoxLayout(btns, BoxLayout.X_AXIS));
         btns.setAlignmentX(CENTER_ALIGNMENT);
+        btns.setBackground(new Color(0, 0, 0, 0));
         
         btns.add(pause);
         btns.add(Box.createRigidArea(new Dimension(25, 0)));
@@ -63,6 +64,7 @@ public class ButtonsPanel extends JPanel implements ActionListener {
         add(Box.createRigidArea(new Dimension(0, 20)));
         add(btns);
         
+        setBackground(new Color(0, 0, 0, 0));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
     

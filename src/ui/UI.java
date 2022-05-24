@@ -10,6 +10,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -77,6 +78,7 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         add(btns);
         add(tp);
         add(generation);
+        add(Box.createRigidArea(new Dimension(0, 25)));
 
         revalidate();
         repaint();
@@ -133,11 +135,17 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     }
     
     public void showDialog(String msg) {
+        blockKeyboard = true;
         JOptionPane.showMessageDialog(rootPane, msg);
+        blockKeyboard = false;
     }
     
     public boolean showConfirmDialog(String msg) {
-        return JOptionPane.showConfirmDialog(rootPane, null, msg, JOptionPane.YES_NO_OPTION) == 0;
+        blockKeyboard = true;
+        boolean result = JOptionPane.showConfirmDialog(rootPane, null, msg, JOptionPane.YES_NO_OPTION) == 0;
+        blockKeyboard = false;
+        
+        return result;
     }
     
     public void openFiguresPanel() {

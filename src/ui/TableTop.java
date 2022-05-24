@@ -84,6 +84,7 @@ public class TableTop extends JPanel {
             }
         }
         
+        setBackground(new Color(0, 0, 0, 0));
         setLayout(new GridLayout(TP_HEIGHT, TP_WIDTH));
     }
     

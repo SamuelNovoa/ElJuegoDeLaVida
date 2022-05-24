@@ -3,6 +3,7 @@ package ui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -30,7 +31,6 @@ public class FiguresPanel extends JDialog implements ActionListener {
             
             this.figure = figure;
             
-            setAlignmentX(CENTER_ALIGNMENT);
             addActionListener(this);
         }
         
@@ -51,8 +51,13 @@ public class FiguresPanel extends JDialog implements ActionListener {
         contentPanel = new JPanel();
         scrollPanel = new JScrollPane(contentPanel);
         manualInput = new JTextField();
+        manualInput.setMaximumSize(new Dimension(200, 50));
+        manualInput.setMinimumSize(new Dimension(200, 50));
+        manualInput.setAlignmentX(CENTER_ALIGNMENT);
+        
         manualInputOk = new Button("Ok");
         manualInputOk.addActionListener(this);
+        manualInputOk.setAlignmentX(CENTER_ALIGNMENT);
         
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         
@@ -62,15 +67,22 @@ public class FiguresPanel extends JDialog implements ActionListener {
         if (ui.getProfile() == null)
             return;
         
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         for (Figure figure : Figure.get(ui.getProfile())) {
-            System.out.println(figure.name);
-            contentPanel.add(new FigureButton(figure));
+            FigureButton figureButton = new FigureButton(figure);
+            
+            figureButton.setAlignmentX(CENTER_ALIGNMENT);
+            contentPanel.add(figureButton);
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
         
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 50)));
         contentPanel.add(manualInput);
         contentPanel.add(manualInputOk);
         
-        setSize(300, 250);
+        setMaximumSize(new Dimension(300, 400));
+        setMinimumSize(new Dimension(300, 400));
+        
         add(scrollPanel);
     }
     
