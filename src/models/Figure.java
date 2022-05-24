@@ -6,58 +6,80 @@
 package models;
 
 import DBUtils.SQLMgr;
+import DBUtils.SQLMgr.Condition;
 import DBUtils.SQLModel;
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author a21samuelnc
  */
-public class Figure extends SQLModel {
+public class Figure implements SQLModel {
+    private static String table = "figures";
+    
     public Profile profile;
-    public String name;
     public int id;
-    public InputStream data;
+    public String name;
+    public byte[] data;
     
-    public static Figure[] get(int id) {
-        return null;
-    }
-    
-    public static Figure[] get(String field, String op, String value) {
-        return null;
-    }
-    
-    public static Figure[] getAll() {
-        return null;
-    }
-    
-    public Figure() {
-        table = "figures";
-        primary = "id";
-    }
-    
-    public Figure(Profile profile, String name, InputStream data) {
-        this();
+    public static Figure[] get(Profile profile) {
+        List<Map<String, Object>> results = SQLMgr.read(table, new Condition[] { new Condition("profile", "=", profile.id) });
+        Figure[] figures = new Figure[results.size()];
         
+        System.out.println(results.size());
+        for (int i = 0; i < results.size(); i++) {
+            Map<String, Object> tuple = results.get(i);
+            Figure figure = new Figure();
+            
+            figure.profile = profile;
+            figure.name = tuple.get("name").toString();
+            figure.data = (byte[])tuple.get("data");
+
+            figures[i] = figure;
+        }
+        
+        return figures;
+    }
+    
+    public Figure() { }
+    
+    public Figure(Profile profile, String name, byte[] data) {
         this.profile = profile;
+        this.id = 0;
         this.name = name;
         this.data = data;
-        
-        id = 2;
     }
     
+    @Override
+    public Condition[] getPrimary() {
+        return new Condition[] {
+            new Condition("profile", "=", profile.id),
+            new Condition("id", "=", id)
+        };
+    }
+    
+    @Override
     public void save() {
-        Map<String, Object> tableData = new HashMap<>();
+        Map<String, Object> tuple = new HashMap<>();
         
-        if (id != 0)
-            tableData.put("id", id);
+        tuple.put("profile", profile.id);
+        tuple.put("name", name);
+        tuple.put("data", new ByteArrayInputStream(data));
         
-        tableData.put("profile", profile);
-        tableData.put("name", name);
-        tableData.put("data", data);
+        if (id == 0)
+            id = SQLMgr.insert(table, tuple);
+        else
+            SQLMgr.update(table, tuple, getPrimary());
+    }
+
+    @Override
+    public void delete() {
+        if (id == 0)
+            return;
         
-        SQLMgr.update(table, primary, id, tableData);
+        SQLMgr.delete(table, getPrimary());
     }
 }

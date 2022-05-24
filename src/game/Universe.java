@@ -13,14 +13,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.border.TitledBorder;
-import static javax.swing.border.TitledBorder.LEADING;
 import logging.Log;
 import models.Figure;
-import models.Profile;
-import ui.FiguresPanel;
 import ui.UI;
 
 /**
@@ -30,32 +24,33 @@ import ui.UI;
 public class Universe {
     private UI ui;
     
-    private int diff;
-    private int vlc;
-    
-    private Cell[][] cells;
-    
     private boolean isRunning;
     private boolean isPaused;
     
+    private Figure figureToSpawn;
+    
+    private int diff;
+    private int vlc;
+    
     private long generation;
     
-    private Corner[] corners;
+    private final Cell[][] cells;
+    private final Corner[] corners;
     
     private class Corner {
-        private final int x;
-        private final int y;
+        private final byte x;
+        private final byte y;
         
-        public Corner(int y, int x) {
+        public Corner(byte y, byte x) {
             this.x = x;
             this.y = y;
         }
 
-        public int getX() {
+        public byte getX() {
             return x;
         }
 
-        public int getY() {
+        public byte getY() {
             return y;
         }
     }
@@ -69,15 +64,17 @@ public class Universe {
     public Universe() {
         ui = new UI(this);
         
-        diff = DEFAULT_DIFF;
-        vlc = 1;
-        
-        cells = new Cell[TP_HEIGHT][TP_WIDTH];
         isRunning = true;
         isPaused = true;
         
+        figureToSpawn = null;
+        
+        diff = DEFAULT_DIFF;
+        vlc = 1;
+        
         generation = 0L;
         
+        cells = new Cell[TP_HEIGHT][TP_WIDTH];
         corners = new Corner[2];
         
         for (int i = 0; i < TP_HEIGHT; i++) {
@@ -193,85 +190,24 @@ public class Universe {
         ui.getBtns().setVlc(vlc);
     }
     
-    public void changeCell(int row, int col) {
-        cells[row][col].changeCell();
-    }
-    
-    public void selectCorner(int row, int col) {
-        if (corners[0] == null && corners[1] == null) {
-            corners[0] = new Corner(row, col);
-            
-            highlightSelected(true);
-        } else if (corners[0] != null && corners[1] == null) {
-            corners[1] = new Corner(row, col);
-            
-            highlightSelected(true);
-        } else {
-            highlightSelected(false);
-            
-            corners[0] = null;
-            corners[1] = null;
-        }
-    }
-    
     public void saveFigure() {
-        String name = ui.showDialog("Introduce un nombre para la figura: ");
+        String name;
         
-        Figure fig = getSelected(name);
-        if (fig == null)
+        name = ui.showStringDialog("Introduce un nombre para la figura: ");
+        if (name == null)
             return;
         
-//        spawnFigure(fig, 1, 1);
+        Figure fig = getSelected(name);
+        if (fig == null) {
+            ui.showDialog("¡Antes debes seleccionar una figura con click derecho!");
+            return;
+        }
+        
         fig.save();
-//        ui.getFiguresPanel().addFigure(new FiguresBtns(fig, ui));
     }
     
-    public void spawnFigure(Figure fig, int col, int row) {
-        DataInputStream data = new DataInputStream(fig.data);
-        
-        try {
-            int cols = data.readInt();
-            final int rows = data.readInt();
-            
-            byte b;
-
-            int cornerCol = col - (cols / 2);
-            int cornerRow = row - (rows / 2);
-            
-            int indexCol = 0;
-            int indexRow = 0;
-
-            while ((b = (byte)data.read()) != -1) {
-                for (int i = 0x80; i > 0x0; i = i >> 1) {
-                    int destRow = cornerRow + indexRow;
-                    int destCol = cornerCol + indexCol;
-                    
-                    if (destRow >= TP_HEIGHT)
-                        destRow -= TP_HEIGHT;
-                    else if (destRow < 0)
-                        destRow += TP_HEIGHT;
-                    
-                    if (destCol >= TP_WIDTH)
-                        destCol -= TP_WIDTH;
-                    else if (destCol < 0)
-                        destCol += TP_WIDTH;
-                    
-                    cells[destRow][destCol].changeCell((b & i) != 0);
-
-                    indexCol++;
-                    if (indexCol >= cols) {
-                        if (indexRow >= rows)
-                            break;
-                        
-                        indexCol = 0;
-                        indexRow++;
-                    }
-                }
-            }
-            
-        } catch (IOException ex) {
-            Log.writeErr(ex.getMessage());
-        }
+    public void setFigureToSpawn(Figure figure) {
+        this.figureToSpawn = figure;
     }
     
     public void keyPressed(KeyEvent e) {
@@ -291,9 +227,8 @@ public class Universe {
             case KeyEvent.VK_R:
                 reset();
                 break;
-            case KeyEvent.VK_G:
-                //saveFigure();
-                Log.writeErr("Probando");
+            case KeyEvent.VK_S:
+                saveFigure();
                 break;
             default:
                 break;
@@ -308,6 +243,19 @@ public class Universe {
             default:
                 break;
         }
+    }
+    
+    public void mouseLeftClicked(int row, int col) {
+        if (figureToSpawn == null) {
+            changeCell(row, col);
+        } else {
+            spawnFigure(row, col);
+            figureToSpawn = null;
+        }
+    }
+    
+    public void mouseRightClicked(byte row, byte col) {
+        selectCorner(row, col);
     }
     
     private void highlightSelected(boolean highlight) {
@@ -335,14 +283,14 @@ public class Universe {
         if (corners[0] == null || corners[1] == null)
             return null;
         
-        int minY = corners[0].y < corners[1].y ? corners[0].y : corners[1].y;
-        int maxY = corners[0].y > corners[1].y ? corners[0].y : corners[1].y;
+        byte minY = corners[0].y < corners[1].y ? corners[0].y : corners[1].y;
+        byte maxY = corners[0].y > corners[1].y ? corners[0].y : corners[1].y;
 
-        int minX = corners[0].x < corners[1].x ? corners[0].x : corners[1].x;
-        int maxX = corners[0].x > corners[1].x ? corners[0].x : corners[1].x;
+        byte minX = corners[0].x < corners[1].x ? corners[0].x : corners[1].x;
+        byte maxX = corners[0].x > corners[1].x ? corners[0].x : corners[1].x;
         
-        int sizeY = maxY - minY + 1;
-        int sizeX = maxX - minX + 1;
+        byte sizeY = (byte)(maxY - minY + 1);
+        byte sizeX = (byte)(maxX - minX + 1);
         
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(outStream);
@@ -351,8 +299,8 @@ public class Universe {
             byte b = 0;
             int remain = 8;
             
-            data.writeInt(sizeX);
-            data.writeInt(sizeY);
+            data.writeByte(sizeX);
+            data.writeByte(sizeY);
             for (int i = minY; i <= maxY; i++) {
                 for (int j = minX; j <= maxX; j++) {
                     if (remain == 0) {
@@ -366,7 +314,7 @@ public class Universe {
 
                     b = (byte)(b << 1);
                     if (cells[i][j].isAlive())
-                        b += 1;
+                        b |= 1;
                 }
             }
             
@@ -376,38 +324,69 @@ public class Universe {
         } catch (IOException ex) {
             Log.writeErr(ex.getMessage());
         }
-        InputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
         
-        return new Figure(ui.getProfile(), name, inStream); 
+        return new Figure(ui.getProfile(), name, outStream.toByteArray()); 
     }
     
-    
-    public void loadFigures() {
-        new FiguresPanel(ui).loadFigure();
+    private void changeCell(int row, int col) {
+        cells[row][col].changeCell();
     }
     
-    
-    public void newProfile() {
-        String name;
-        do {
-            name = ui.showDialog("Introduce el nombre del jugador: ");
-        } while (name.isEmpty());
-        
-        Profile prof = new Profile(name);
-        prof.save();
-        ui.getMainPanel().addProfile(prof);
-        ui.refresh();
+    private void selectCorner(byte row, byte col) {
+        if (corners[0] == null && corners[1] == null) {
+            corners[0] = new Corner(row, col);
+            
+            highlightSelected(true);
+        } else if (corners[0] != null && corners[1] == null) {
+            corners[1] = new Corner(row, col);
+            
+            highlightSelected(true);
+        } else {
+            highlightSelected(false);
+            
+            corners[0] = null;
+            corners[1] = null;
+        }
     }
     
-    public void infoPanel() {
-        JDialog info = new JDialog();
-        JLabel infoLabel = new JLabel();
-        info.setTitle("Información");
-        info.setSize(350, 250);
-        
-        infoLabel.setText(INFO);
-        
-        info.add(infoLabel);
-        info.setVisible(true);
+    private void spawnFigure(int col, int row) {
+        byte cols = figureToSpawn.data[0];
+        byte rows = figureToSpawn.data[1];
+
+        int cornerCol = col - (cols / 2);
+        int cornerRow = row - (rows / 2);
+
+        int indexCol = 0;
+        int indexRow = 0;
+
+        for (int i = 2; i < figureToSpawn.data.length; i++) {
+            byte b = figureToSpawn.data[i];
+
+            for (int j = 0x80; j > 0x0; j = j >> 1) {
+                int destRow = cornerRow + indexRow;
+                int destCol = cornerCol + indexCol;
+
+                if (destRow >= TP_HEIGHT)
+                    destRow -= TP_HEIGHT;
+                else if (destRow < 0)
+                    destRow += TP_HEIGHT;
+
+                if (destCol >= TP_WIDTH)
+                    destCol -= TP_WIDTH;
+                else if (destCol < 0)
+                    destCol += TP_WIDTH;
+
+                cells[destRow][destCol].changeCell((b & j) != 0);
+
+                indexCol++;
+                if (indexCol >= cols) {
+                    if (indexRow >= rows)
+                        break;
+
+                    indexCol = 0;
+                    indexRow++;
+                }
+            }
+        }
     }
 }

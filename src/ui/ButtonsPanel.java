@@ -13,7 +13,7 @@ import javax.swing.BoxLayout;
  *
  * @author a21iagoof
  */
-public class Buttons extends JPanel implements ActionListener {
+public class ButtonsPanel extends JPanel implements ActionListener {
     private UI ui;
     
     private Button pause;
@@ -23,7 +23,7 @@ public class Buttons extends JPanel implements ActionListener {
     private Button savePattern;
     private Button back;
     
-    public Buttons(UI ui) {
+    public ButtonsPanel(UI ui) {
         super();
         
         this.ui = ui;
@@ -83,7 +83,7 @@ public class Buttons extends JPanel implements ActionListener {
         } else if (event.getSource() == vlc) {
             ui.getUniverse().changeVelocity(VLC_AUTO);
         } else if (event.getSource() == loadPattern) {
-            ui.getUniverse().loadFigures();
+            ui.openFiguresPanel();
         } else if (event.getSource() == savePattern) {
             ui.getUniverse().saveFigure();
         } else if (event.getSource() == back) {

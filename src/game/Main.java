@@ -5,10 +5,7 @@
  */
 package game;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import models.Profile;
-import ui.UI;
+import logging.Log;
 
 /**
  *
@@ -20,15 +17,12 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Profile prof = Profile.get(1);
-        
-        System.out.println(prof.name);
         Universe universe = new Universe();
         
         try {
             universe.run();
         } catch (InterruptedException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Log.writeErr(ex.getMessage());
         }
     }
     

@@ -14,7 +14,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import logging.Log;
 import models.Profile;
 
 /**
@@ -22,80 +21,82 @@ import models.Profile;
  * @author a21samuelnc
  */
 public class UI extends JFrame implements KeyEventDispatcher, ComponentListener {
-    private Universe universe;
-    
-    private TableTop tp;
-    private Buttons btns;
-    private MainPanel mp;
-    private FiguresPanel fp;
-    
+
+    private final Universe universe;
+
+    private final TableTop tp;
+    private final ButtonsPanel btns;
+    private final MainPanel mp;
+
     private Profile profile;
-    private JLabel generation;
-    
+    private final JLabel generation;
+
     private boolean blockKeyboard;
-    
+
     public UI(Universe universe) {
         super(GAME_TITLE);
-        
+
         this.universe = universe;
-        
+
         tp = new TableTop(this);
-        btns = new Buttons(this);
+        btns = new ButtonsPanel(this);
         generation = new JLabel("Generación: 0");
-        fp = new FiguresPanel(this);
-        
+
         blockKeyboard = false;
-        
+
         mp = new MainPanel(this);
         
+        profile = null;
+
         add(mp);
-        
+
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGTH));
-        
+
         getContentPane().setBackground(new Color(0xCFD6A6));
-        
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-        
+
         addComponentListener(this);
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
     }
-    
+
     public void startGame(Profile profile) {
-        if (this.profile != null && this.profile != profile)
+        if (this.profile != null && this.profile != profile) {
             universe.reset();
-        
+        }
+
         this.profile = profile;
-        
+
         remove(mp);
-        
+
         setTitle(GAME_TITLE + " (" + profile.name + ")");
-        
-        add(btns);        
+
+        add(btns);
         add(tp);
         add(generation);
-        
+
         revalidate();
         repaint();
-        
+
         tp.resize();
     }
-    
+
     public void endGame() {
         remove(btns);
         remove(tp);
         remove(generation);
-        
+
         setTitle(GAME_TITLE);
-        
+
         add(mp);
-        
+
         revalidate();
         repaint();
     }
-    
+
     public void setGeneration(long newGeneration) {
         generation.setText("Generación: " + newGeneration);
     }
@@ -103,42 +104,48 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
     public Universe getUniverse() {
         return universe;
     }
-    
+
     public TableTop getTp() {
         return tp;
     }
-    
-    public Buttons getBtns() {
+
+    public ButtonsPanel getBtns() {
         return btns;
     }
 
     public Profile getProfile() {
         return profile;
     }
-    
-    public FiguresPanel getFiguresPanel() {
-        return fp;
-    }
-    
+
     public MainPanel getMainPanel() {
         return mp;
     }
-    
-    public String showDialog(String msg) {
+
+    public String showStringDialog(String msg) {
         blockKeyboard = true;
         String resp;
         do {
             resp = JOptionPane.showInputDialog(msg);
-            if (resp == null) {
-                resp = "";
-                break;
-            }
-        } while (resp.isEmpty());
+        } while (resp != null && resp.isEmpty());
         blockKeyboard = false;
-        
+
         return resp;
     }
     
+    public void showDialog(String msg) {
+        JOptionPane.showMessageDialog(rootPane, msg);
+    }
+    
+    public boolean showConfirmDialog(String msg) {
+        return JOptionPane.showConfirmDialog(rootPane, null, msg, JOptionPane.YES_NO_OPTION) == 0;
+    }
+    
+    public void openFiguresPanel() {
+        FiguresPanel figPanel = new FiguresPanel(this);
+        
+        figPanel.setVisible(true);
+    }
+
     public void refresh() {
         revalidate();
         repaint();
@@ -146,9 +153,10 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
-        if (blockKeyboard)
+        if (blockKeyboard) {
             return false;
-        
+        }
+
         switch (e.getID()) {
             case KeyEvent.KEY_PRESSED:
                 universe.keyPressed(e);
@@ -159,25 +167,22 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
             default:
                 break;
         }
-        
+
         e.consume();
         return true;
     }
-    
+
     @Override
     public void componentResized(ComponentEvent e) {
         tp.resize();
     }
 
     @Override
-    public void componentMoved(ComponentEvent e) {
-    }
+    public void componentMoved(ComponentEvent e) {}
 
     @Override
-    public void componentShown(ComponentEvent e) {
-    }
+    public void componentShown(ComponentEvent e) {}
 
     @Override
-    public void componentHidden(ComponentEvent e) {
-    }
+    public void componentHidden(ComponentEvent e) {}
 }

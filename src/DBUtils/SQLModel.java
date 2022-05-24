@@ -5,15 +5,14 @@
  */
 package DBUtils;
 
-import java.lang.reflect.Field;
+import DBUtils.SQLMgr.Condition;
 
 /**
  *
  * @author a21samuelnc
  */
-public abstract class SQLModel {
-    protected static String table;
-    protected static String primary;
-    
-    public SQLModel() { }
+public interface SQLModel {
+    public abstract Condition[] getPrimary();
+    public abstract void save();
+    public abstract void delete();
 }

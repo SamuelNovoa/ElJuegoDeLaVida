@@ -6,9 +6,8 @@
 package models;
 
 import DBUtils.SQLMgr;
+import DBUtils.SQLMgr.Condition;
 import DBUtils.SQLModel;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,67 +16,76 @@ import java.util.Map;
  *
  * @author a21samuelnc
  */
-public class Profile extends SQLModel {
+public class Profile implements SQLModel {
+    private static final String table = "profiles";
+    
     public int id;
     public String name;
     
     public List<Figure> figures;
     
     public static Profile get(int id) {
+        List<Map<String, Object>> results = SQLMgr.read(table, new Condition[] { new Condition("id", "=", id) });
+        if (results.isEmpty())
+            return null;
+        
+        Map<String, Object> tuple = results.get(0);
         Profile prof = new Profile();
         
-        List<Map<String, Object>> results = SQLMgr.read(table, primary, "=", Integer.toString(id));
-        
-        prof.id = ((Long)results.get(0).get("id")).intValue();
-        prof.name = results.get(0).get("name").toString();
+        prof.id = ((Long)tuple.get("id")).intValue();
+        prof.name = tuple.get("name").toString();
         
         return prof;
     }
     
     public static Profile[] getAll() {
-        ArrayList<Profile> profiles = new ArrayList<>();
-        
-        List<Map<String, Object>> results = SQLMgr.read(table);
-        
-        for (Map<String, Object> row : results) {
+        List<Map<String, Object>> results = SQLMgr.read(table, null);
+        Profile[] profiles = new Profile[results.size()];
+
+        for (int i = 0; i < results.size(); i++) {
+            Map<String, Object> tuple = results.get(i);
             Profile prof = new Profile();
             
-            prof.id = ((Long)row.get("id")).intValue();
-            prof.name = row.get("name").toString();
+            prof.id = ((Long)tuple.get("id")).intValue();
+            prof.name = tuple.get("name").toString();
+            
+            profiles[i] = prof;
         }
         
-        return profiles.toArray(new Profile[profiles.size()]);
-    }
-
-    public Profile() {
-        table = "profiles";
-        primary = "id";
+        return profiles;
     }
     
+    public Profile() { }
+    
     public Profile(String name) {
-        this();
-        
         this.name = name;
         this.id = 0;
     }
     
-    public Profile(String name, int id) {
-        this();
-        
-        this.name = name;
-        this.id = id;
+    @Override
+    public Condition[] getPrimary() {
+        return new Condition[] {
+            new Condition("id", "=", id)
+        };
     }
     
+    @Override
     public void save() {
-        Map<String, Object> tableData = new HashMap<>();
+        Map<String, Object> tuple = new HashMap<>();
         
-        if (id != 0)
-            tableData.put("id", id);
+        tuple.put("name", name);
         
-        tableData.put("name", name);
-        
-        int newId = SQLMgr.update(table, primary, id, tableData);
         if (id == 0)
-            id = newId;
+            id = SQLMgr.insert(table, tuple);
+        else
+            SQLMgr.update(table, tuple, getPrimary());
+    }
+    
+    @Override
+    public void delete() {
+        if (id == 0)
+            return;
+        
+        SQLMgr.delete(table, getPrimary());
     }
 }

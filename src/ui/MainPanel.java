@@ -1,6 +1,6 @@
 package ui;
 
-import DBUtils.SQLMgr;
+import static config.Config.INFO;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,173 +14,147 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import models.Profile;
 
-
-
 /**
  *
  * @author a21iagoof
  */
-public class MainPanel extends JPanel implements ActionListener, MouseListener {
-    private UI ui;
-    
-    private JPanel footBtns;
-    
-    private JLabel title;
-    
-    private Button newProfile;
-    private Button info;
-    private Button exit;
-    
-    private Profile[] profiles;
+public class MainPanel extends JPanel implements ActionListener {
+    private final UI uiPanel;
 
-    private int profilesCount;
-    
-    private class ProfileBtn extends Button {
-        private Profile profile;
+    private final JPanel footBtns;
 
-        public ProfileBtn(Profile profile) {
+    private final JLabel title;
+
+    private final Button newProfile;
+    private final Button info;
+    private final Button exit;
+
+    private class ProfileButton extends Button implements MouseListener {
+
+        private final Profile profile;
+
+        public ProfileButton(Profile profile) {
             super(profile.name);
 
             this.profile = profile;
+
+            addMouseListener(this);
         }
 
-        public Profile getProfile() {
-            return profile;
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            switch (e.getButton()) {
+                case MouseEvent.BUTTON1:
+                    uiPanel.startGame(profile);
+                    break;
+                case MouseEvent.BUTTON3:
+                    deleteProfile(this);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
         }
     }
-    
+
     public MainPanel(UI ui) {
         super();
-        
-        this.ui= ui;
-        
+
+        this.uiPanel = ui;
+
         title = new JLabel("El Juego de la Vida");
-        
+
         newProfile = new Button("Crear perfil");
         info = new Button("Instruccións");
         exit = new Button("Saír");
-        
-        profiles = Profile.getAll();
-        
+
         newProfile.addActionListener(this);
         info.addActionListener(this);
         exit.addActionListener(this);
-        
+
         footBtns = new JPanel();
         footBtns.add(newProfile);
         footBtns.add(Box.createRigidArea(new Dimension(10, 0)));
         footBtns.add(info);
         footBtns.add(Box.createRigidArea(new Dimension(10, 0)));
         footBtns.add(exit);
-        
+
         setBackground(new Color(0, 0, 0, 0));
         footBtns.setLayout(new BoxLayout(footBtns, BoxLayout.X_AXIS));
         footBtns.setBackground(new Color(0, 0, 0, 0));
-        
+
         title.setAlignmentX(CENTER_ALIGNMENT);
         title.setFont(new Font("Linux Libertine Display G", Font.ITALIC, 41));
-        
+
         footBtns.setAlignmentX(CENTER_ALIGNMENT);
-        
+
         add(Box.createRigidArea(new Dimension(0, 40)));
         add(title);
         add(Box.createRigidArea(new Dimension(0, 40)));
-        
-        for (Profile profile : profiles) {
-            ProfileBtn btn = new ProfileBtn(profile);
-            btn.addActionListener(this);
-            btn.addMouseListener(this);
+
+        for (Profile profile : Profile.getAll()) {
+            ProfileButton btn = new ProfileButton(profile);
             btn.setAlignmentX(CENTER_ALIGNMENT);
-            
+
             add(btn);
             add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
-//        add(Box.createRigidArea(new Dimension(0, 200)));
         add(footBtns);
-        
-        profilesCount = profiles.length;
-        
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
-    
-    public void addProfile(Profile profile) {
-        if (profilesCount < 10) {
-            remove(footBtns);
 
-            ProfileBtn btn = new ProfileBtn(profile);
-            btn.addActionListener(this);
-            btn.addMouseListener(this);
-            btn.setAlignmentX(CENTER_ALIGNMENT);
-
-            add(btn);
-            add(Box.createRigidArea(new Dimension(0, 10)));
-
-            add(footBtns);
-            
-            profilesCount++;
+    private void newProfile() {
+        String name = uiPanel.showStringDialog("Introduce el nombre del perfil:");
+        if (name == null) {
+            return;
         }
+
+        Profile profile = new Profile(name);
+        profile.save();
+
+        ProfileButton btn = new ProfileButton(profile);
+        btn.setAlignmentX(CENTER_ALIGNMENT);
+
+        add(btn, getComponents().length - 1);
+        add(Box.createRigidArea(new Dimension(0, 10)), getComponents().length - 1);
+
+        uiPanel.refresh();
     }
-    
-    public void removeProfile(Profile prof) {
+
+    private void deleteProfile(ProfileButton profileBtn) {
+        Profile profile = profileBtn.profile;
         
-    }
-    
-    private int countNewProfiles = 1;
-    public int getNextProfileID() {
-        return profiles[profiles.length-1].id + countNewProfiles++;
+        if (uiPanel.showConfirmDialog("¿Seguro que quieres eliminar el perfil?") && profile.id != 1) {
+            remove(profileBtn);
+            profile.delete();
+            uiPanel.refresh();
+        }
     }
 
     @Override
-    public void actionPerformed(ActionEvent event) {
-        if (event.getSource() instanceof ProfileBtn) {
-            ui.startGame(((ProfileBtn)event.getSource()).getProfile());
-        } else if (event.getSource() == newProfile) {
-            ui.getUniverse().newProfile();
-        } else if (event.getSource() == info) {
-            ui.getUniverse().infoPanel();
-        } else if (event.getSource() == exit) {
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == newProfile) {
+            newProfile();
+        } else if (e.getSource() == info) {
+            uiPanel.showDialog(INFO);
+        } else if (e.getSource() == exit) {
             System.exit(0);
         }
     }
-    
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        switch (e.getButton()) {
-            case MouseEvent.BUTTON3:
-                System.out.println("Borrar");
-                Profile prof = ((ProfileBtn)e.getSource()).getProfile();
-                String ans = ui.showDialog("Escriba CONFIRMAR para borrar el perfil").toUpperCase();
-                if ((ans.equals("CONFIRMAR")) && (prof.id != 1)) {
-                    remove((ProfileBtn)e.getSource());
-//                    prof.delete();
-                    ui.refresh();
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    
-        @Override
-    public void mousePressed(MouseEvent arg0) {
-        
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent arg0) {
-        
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent arg0) {
-        
-    }
-
-    @Override
-    public void mouseExited(MouseEvent arg0) {
-        
-    }
 }
-

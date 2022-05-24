@@ -1,17 +1,16 @@
 package ui;
 
+import static config.Config.*;
+
 import java.awt.GridLayout;
 import javax.swing.JPanel;
-
-import static config.Config.*;
 import java.awt.Color;
 import java.awt.Dimension;
-
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
-import models.Figure;
+import models.Profile;
 
 /**
  * TODO:
@@ -23,55 +22,62 @@ import models.Figure;
  * @author a21samuelnc
  */
 public class TableTop extends JPanel {
-    private UI ui;
-    private JButton[][] cells;
+    private final UI uiPanel;
     
-    private Figure loadFigure;
+    private final CellButton[][] cells;
     
-    private class CellListener extends MouseAdapter {
-        private int row;
-        private int col;
-        
-        public CellListener(int row, int col) {
+    private class CellButton extends JButton implements MouseListener {
+        private final byte row;
+        private final byte col;
+
+        public CellButton(byte row, byte col) {
             this.row = row;
             this.col = col;
+
+            addMouseListener(this);
+
+            setBackground(Color.WHITE);
+            setBorder(new LineBorder(Color.GRAY, 1, false));
+            setFocusable(false);
         }
-        
+
         @Override
         public void mouseClicked(MouseEvent e) {
             switch (e.getButton()) {
                 case MouseEvent.BUTTON1:
-                    if (loadFigure != null) {
-                        ui.getUniverse().spawnFigure(loadFigure, col, row);
-                        loadFigure = null;
-                    } else
-                        ui.getUniverse().changeCell(row, col);
+                    uiPanel.getUniverse().mouseLeftClicked(row, col);
                     break;
                 case MouseEvent.BUTTON3:
-                    ui.getUniverse().selectCorner(row, col);
+                    uiPanel.getUniverse().mouseRightClicked(row, col);
                     break;
                 default:
                     break;
             }
         }
+
+        @Override
+        public void mousePressed(MouseEvent e) {}
+
+        @Override
+        public void mouseReleased(MouseEvent e) {}
+
+        @Override
+        public void mouseEntered(MouseEvent e) {}
+
+        @Override
+        public void mouseExited(MouseEvent e) {}
     }
 
     public TableTop(UI ui) {
         super();
         
-        this.ui = ui;
-        cells = new JButton[TP_HEIGHT][TP_WIDTH];
-        loadFigure = null;
+        this.uiPanel = ui;
         
-        for (int i = 0; i < TP_HEIGHT; i++) {
-            for (int j = 0; j < TP_WIDTH; j++) {
-                JButton cell = new JButton();
-
-                cell.addMouseListener(new CellListener(i, j));
+        cells = new CellButton[TP_HEIGHT][TP_WIDTH];
         
-                cell.setBackground(Color.WHITE);
-                cell.setBorder(new LineBorder(Color.GRAY, 1, false));
-                cell.setFocusable(false);
+        for (byte i = 0; i < TP_HEIGHT; i++) {
+            for (byte j = 0; j < TP_WIDTH; j++) {
+                CellButton cell = new CellButton(i, j);
                 
                 cells[i][j] = cell;
                 add(cell);
@@ -83,10 +89,6 @@ public class TableTop extends JPanel {
     
     public void changeCellColor(int row, int col, Color color) {
         cells[row][col].setBackground(color);
-    }
-
-    public void setLoadFigure(Figure loadFigure) {
-        this.loadFigure = loadFigure;
     }
     
     public void resize() {
