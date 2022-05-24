@@ -6,6 +6,11 @@ package game;
 
 import static config.Config.*;
 import static game.Universe.VlcChanges.*;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +18,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import logging.Log;
 import models.Figure;
 import ui.UI;
@@ -210,9 +217,8 @@ public class Universe {
         String name;
 
         name = ui.showStringDialog("Introduce un nombre para la figura: ");
-        if (name == null) {
+        if (name == null)
             return;
-        }
 
         Figure fig = getSelected(name);
         if (fig == null) {
@@ -222,9 +228,37 @@ public class Universe {
 
         fig.save();
     }
+    
+    public void copyFigure() {
+        Figure fig = getSelected("");
+        if (fig == null)
+            return;
+        
+        String hexa = fig.getHexa();
+        
+        StringSelection stringSelection = new StringSelection(hexa);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
 
     public void setFigureToSpawn(Figure figure) {
         this.figureToSpawn = figure;
+    }
+    
+    public void pasteFigure() {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        
+        String hexa = "";
+        if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor))
+            try {
+                hexa = clipboard.getData(DataFlavor.stringFlavor).toString();
+        } catch (UnsupportedFlavorException ex) {
+            Log.writeErr(ex.getMessage());
+        } catch (IOException ex) {
+            Log.writeErr(ex.getMessage());
+        }
+
+        setFigureToSpawn(Figure.getFromHexa(hexa));
     }
 
     public void keyPressed(KeyEvent e) {
@@ -246,6 +280,14 @@ public class Universe {
                 break;
             case KeyEvent.VK_S:
                 saveFigure();
+                break;
+            case KeyEvent.VK_C:
+                if ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
+                    copyFigure();
+                break;
+            case KeyEvent.VK_V:
+                if ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
+                    pasteFigure();
                 break;
             default:
                 break;
@@ -342,6 +384,11 @@ public class Universe {
         } catch (IOException ex) {
             Log.writeErr(ex.getMessage());
         }
+        
+        highlightSelected(false);
+
+        corners[0] = null;
+        corners[1] = null;
 
         return new Figure(ui.getProfile(), name, outStream.toByteArray());
     }

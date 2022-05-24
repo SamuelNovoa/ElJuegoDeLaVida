@@ -44,6 +44,28 @@ public class Figure implements SQLModel {
         return figures;
     }
     
+    public static Figure getFromHexa(String hexa) {
+        Figure figure = null;
+        
+        try {
+            hexa = hexa.replaceAll(" ", "").replaceAll("0x", "").toUpperCase();
+            byte[] data = new byte[hexa.length() / 2];
+
+            for (int i = 0; i < hexa.length() / 2; i++) {
+                String byteStr = hexa.substring(i * 2, i * 2 + 2);
+
+                data[i] = (byte)Integer.parseInt(byteStr, 16);
+                String.format("--- %02X", data[i]);
+            }
+
+            figure = new Figure();
+            figure.data = data;
+        } catch (NumberFormatException ex) {
+        }
+        
+        return figure;
+    }
+    
     public Figure() { }
     
     public Figure(Profile profile, String name, byte[] data) {
@@ -51,6 +73,18 @@ public class Figure implements SQLModel {
         this.id = 0;
         this.name = name;
         this.data = data;
+    }
+    
+    public String getHexa() {
+        String hexa = "0x";
+        
+        for (int i = 0; i < data.length; i++) {
+            byte b = data[i];
+            
+            hexa += String.format("%02X", b);
+        }
+        
+        return hexa;
     }
     
     @Override
