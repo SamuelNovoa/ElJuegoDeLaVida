@@ -13,17 +13,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @author a21samuelnc
+ * Modelo dos perfís.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class Profile implements SQLModel {
+    /**
+     * Nome da táboa <strong>CAMPO OBRIGATORIO NOS MODELOS.</strong>
+     */
     private static final String table = "profiles";
     
+    /**
+     * Id do perfil.
+     */
     public int id;
+    
+    /**
+     * Nome do perfil.
+     */
     public String name;
     
-    public List<Figure> figures;
-    
+    /**
+     * Método para obter un determinado perfil.
+     * 
+     * @param id ID do perfil
+     * @return Perfil seleccionado
+     */
     public static Profile get(int id) {
         List<Map<String, Object>> results = SQLMgr.read(table, new Condition[] { new Condition("id", "=", id) });
         if (results.isEmpty())
@@ -38,6 +53,11 @@ public class Profile implements SQLModel {
         return prof;
     }
     
+    /**
+     * Método para obter todos os perfís na base de datos.
+     * 
+     * @return Array de perfís gardados na base de datos
+     */
     public static Profile[] getAll() {
         List<Map<String, Object>> results = SQLMgr.read(table, null);
         Profile[] profiles = new Profile[results.size()];
@@ -55,8 +75,16 @@ public class Profile implements SQLModel {
         return profiles;
     }
     
+    /**
+     * Construtor vacío do perfil.
+     */
     public Profile() { }
     
+    /**
+     * Construtor principal do perfil.
+     * 
+     * @param name Nome do perfil
+     */
     public Profile(String name) {
         this.name = name;
         this.id = 0;

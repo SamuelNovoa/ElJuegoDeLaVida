@@ -19,15 +19,42 @@ import java.util.Map;
 import logging.Log;
 
 /**
- *
- * @author a21samuelnc
+ * Manager SQL
+ * 
+ * Esta clase ten por obxectivo centralizar toda a xestión SQL ofrecendo un API xenérico
+ * para ser utilizado nos modelos.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class SQLMgr {
+    /**
+     * Estrutura de datos para almacenar an condicións de selección.
+     * 
+     * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
+     */
     public static class Condition {
+        /**
+         * Columna a comprobar
+         */
         public String field;
+        
+        /**
+         * Tipo de comprobación (=, >, !=, ...)
+         */
         public String op;
+        
+        /**
+         * Valor co que se comparará a columna
+         */
         public Object value;
         
+        /**
+         * Constructor  da condición.
+         * 
+         * @param field Columna a comprobar
+         * @param op Tipo de comprobación (=, >, !=, ...)
+         * @param value Valor co que se comparará a columna
+         */
         public Condition(String field, String op, Object value) {
             this.field = field;
             this.op = op;
@@ -35,6 +62,13 @@ public class SQLMgr {
         }
     }
     
+    /**
+     * Método para ler da base de datos.
+     * 
+     * @param table Tabla da que se leerá
+     * @param conditions Condicións de selección que se deben de cumprir
+     * @return A lista de tuplas que cumpran as condicións
+     */
     public static List<Map<String, Object>> read(String table, Condition[] conditions) {
         List<Map<String, Object>> result = new ArrayList<>();
         
@@ -70,10 +104,24 @@ public class SQLMgr {
         return result;
     }
     
+    /**
+     * Método para comprobar se un rexistro existe na base de datos.
+     * 
+     * @param table Tabla na que se buscará
+     * @param conditions Condicións de selección que se deben de cumprir
+     * @return True no caso de que algunha tupla cumpra as condicións, False en caso contrario
+     */
     public static boolean exists(String table, Condition[] conditions) {
         return !read(table, conditions).isEmpty();
     }
     
+    /**
+     * Método para insertar unha nova tupla na base de datos.
+     * 
+     * @param table Tabla onde se deberá insertar
+     * @param tuple Tupla a insertar
+     * @return O id asignado á tupla
+     */
     public static int insert(String table, Map<String, Object> tuple) {
         int result = -1;
         
@@ -96,6 +144,13 @@ public class SQLMgr {
         return result;
     }
     
+    /**
+     * Método para actualizar tuplas na base de datos.
+     * 
+     * @param table Tabla que se deberá de actualizar
+     * @param tuple Novos datos da tupla
+     * @param conditions Condicións de selección que as tuplas deben cumprir
+     */
     public static void update(String table, Map<String, Object> tuple, Condition[] conditions) {
         try (Connection conn = getConn()) {
             String query = "UPDATE " + table + " SET " + getColsUpdate(tuple) + " WHERE " + getConds(conditions) + ";";
@@ -116,6 +171,12 @@ public class SQLMgr {
         }
     }
     
+    /**
+     * Método para eliminar tuplas da base de datos.
+     * 
+     * @param table Tabla na que se deberá eliminar
+     * @param conditions Condicións de selección que se deben cumprir
+     */
     public static void delete(String table, Condition[] conditions) {
         try (Connection conn = getConn()) {
             String query = "DELETE FROM " + table + " WHERE " + getConds(conditions) + ";";
@@ -131,10 +192,22 @@ public class SQLMgr {
         }
     }
     
+    /**
+     * Método para establecer conexión coa base de datos.
+     * 
+     * @return Unha nova conexión coa base de datos
+     * @throws SQLException 
+     */
     private static Connection getConn() throws SQLException {
         return DriverManager.getConnection(DB_HOST, DB_USER, DB_PWD);
     }
     
+    /**
+     * Método para obter a string SQL de condicións de selección
+     * 
+     * @param conditions Condicións de selección
+     * @return String SQL que define as condicións de selección
+     */
     private static String getConds(Condition[] conditions) {
         String conds = "";
         for (Condition condition : conditions) {
@@ -147,6 +220,12 @@ public class SQLMgr {
         return conds;
     }
     
+    /**
+     * Método para obter a string SQL coas columnas dunha tabla.
+     * 
+     * @param tuple Tupla da que se queren obter as columnas
+     * @return String SQL coas columnas dunha tabla
+     */
     private static String getCols(Map<String, Object> tuple) {
         String cols = "(";
         
@@ -161,6 +240,11 @@ public class SQLMgr {
         return cols;
     }
     
+    /**
+     * Método para obter a string SQL cos valores para unha inserción.
+     * @param tuple Tupla da que obter a string de valores
+     * @return String SQL cos valores para unha nova inserción
+     */
     private static String getColsValues(Map<String, Object> tuple) {
         String colsValues = "(";
         
@@ -176,6 +260,12 @@ public class SQLMgr {
         return colsValues;
     }
     
+    /**
+     * Método para obter a string SQL coa relación de columnas e novos valores para un update.
+     * 
+     * @param tuple Tupla da que se queren obter a relación de valores para un update
+     * @return String SQL coa relación de columnas e novos valores para un update
+     */
     private static String getColsUpdate(Map<String, Object> tuple) {
         String colsUpdate = "";
         

@@ -6,12 +6,14 @@ import java.time.LocalDateTime;
 import models.Profile;
 
 /**
- *
- * @author a21iagoof
+ * Clase para xestionar os logs.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class Log {
     /**
-     * Escritura en arquivo marcando como error
+     * Escritura en arquivo marcando como error.
+     * 
      * @param msg co string do error
      */
     public static void writeErr(String msg) {
@@ -19,7 +21,8 @@ public class Log {
     }
     
     /**
-     * Escritura en arquivo marcando como advertencia
+     * Escritura en arquivo marcando como advertencia.
+     * 
      * @param msg co string da advertencia
      */
     public static void writeWarning(String msg) {
@@ -27,7 +30,8 @@ public class Log {
     }
     
     /**
-     * Rexistrar os datos obtidos polo usuario no xogo
+     * Rexistrar os datos obtidos polo usuario no xogo.
+     * 
      * @param user Obxeto co perfil do usuario
      */
     public static void writePlayer(Profile user) {
@@ -35,7 +39,8 @@ public class Log {
     }
     
     /**
-     * Escribe no ficheiro, <strong>engadindo ao final deste</strong> os novos datos
+     * Escribe no ficheiro, engadindo ao final deste os novos datos.
+     * 
      * @param txt string co nome do arquivo de escritura
      * @param msg string co mensaxe a escribir no arquivo
      */

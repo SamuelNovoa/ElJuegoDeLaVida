@@ -7,23 +7,20 @@ package game;
 import static config.Config.*;
 import static game.Universe.VlcChanges.*;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import logging.Log;
 import models.Figure;
 import ui.UI;
 
 /**
- *
- * @author samue
+ * Clase que modela o universo onde viven as células.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class Universe {
-
-    private UI ui;
+    private UI uiPanel;
 
     private boolean isRunning;
     private boolean isPaused;
@@ -38,33 +35,50 @@ public class Universe {
     private final Cell[][] cells;
     private final Corner[] corners;
 
+    /**
+     * Estrutura de datos para almacenar o canto dunha selección.
+     */
     private class Corner {
-
         private final byte col;
         private final byte row;
 
+        /**
+         * Constructor do canto.
+         * 
+         * @param row Fila seleccionada
+         * @param col Columna seleccionada
+         */
         public Corner(byte row, byte col) {
             this.col = col;
             this.row = row;
         }
-
-        public byte getCol() {
-            return col;
-        }
-
-        public byte getRow() {
-            return row;
-        }
     }
 
+    /**
+     * Enumerando de tipos de cambio de velocidade.
+     */
     public enum VlcChanges {
+        /** 
+         * Aumento de velocidad (Duplicarla)
+         */
         VLC_INCREASE,
-        VLC_DECREASE,
+        
+        /**
+         * Decremento de volicad (Dividirla por dos) 
+         */
+        VLC_DECREASE, 
+        
+        /**
+         * Automático (Incrementa, pero si ha llegado al máximo, vuelve al inicio) 
+         */
         VLC_AUTO
     }
 
+    /**
+     * Construtor do universo.
+     */
     public Universe() {
-        ui = new UI(this);
+        uiPanel = new UI(this);
 
         isRunning = true;
         isPaused = true;
@@ -87,10 +101,20 @@ public class Universe {
         }
     }
 
+    /**
+     * Método para obter a interface de usuario.
+     * 
+     * @return A interface de usuario
+     */
     public UI getUI() {
-        return ui;
+        return uiPanel;
     }
 
+    /**
+     * Método para iniciar o xogo.
+     * 
+     * @throws InterruptedException Excepción producida si se interrumpe el sleep
+     */
     public void run() throws InterruptedException {
         isRunning = true;
 
@@ -105,6 +129,9 @@ public class Universe {
         }
     }
 
+    /**
+     * Método para actualizar as células. Chámase en cada cambio de xeración.
+     */
     public void update() {
         for (Cell[] row : cells) {
             for (Cell cell : row) {
@@ -119,9 +146,16 @@ public class Universe {
         }
 
         generation++;
-        ui.setGeneration(generation);
+        uiPanel.setGeneration(generation);
     }
 
+    /**
+     * Método para contar cántas células vivas hai ó redor dunha posición dada.
+     * 
+     * @param row Fila a comprobar
+     * @param col Columna a comprobar
+     * @return O número de células vivas ó redor da posición
+     */
     public int checkAlives(int row, int col) {
         int count = 0;
 
@@ -157,11 +191,14 @@ public class Universe {
         return count;
     }
 
+    /**
+     * Método para resetear o universo (Big Crunch ?).
+     */
     public void reset() {
         pause(true);
 
         generation = 0;
-        ui.setGeneration(0);
+        uiPanel.setGeneration(0);
 
         for (Cell[] row : cells) {
             for (Cell cell : row) {
@@ -174,15 +211,28 @@ public class Universe {
         corners[1] = null;
     }
 
+    /**
+     * Método para intercambiar a pausa do xogo.
+     */
     public void pause() {
         pause(!isPaused);
     }
 
+    /**
+     * Método para pausar o xogo.
+     * 
+     * @param pause Se o xogo se debe pausar ou non
+     */
     public void pause(boolean pause) {
         isPaused = pause;
-        ui.getBtns().setPause(isPaused);
+        uiPanel.getBtns().setPause(isPaused);
     }
 
+    /**
+     * Método para cambiar a velocidade.
+     * 
+     * @param change Tipo de cambio realizado
+     */
     public void changeVelocity(VlcChanges change) {
         switch (change) {
             case VLC_AUTO:
@@ -203,30 +253,44 @@ public class Universe {
         }
 
         diff = DEFAULT_DIFF / vlc;
-        ui.getBtns().setVlc(vlc);
+        uiPanel.getBtns().setVlc(vlc);
     }
 
+    /**
+     * Método para gardar unha figura.
+     */
     public void saveFigure() {
         String name;
 
-        name = ui.showStringDialog("Introduce un nombre para la figura: ");
+        name = uiPanel.showStringDialog("Introduce un nombre para la figura: ");
         if (name == null) {
             return;
         }
 
         Figure fig = getSelected(name);
         if (fig == null) {
-            ui.showDialog("¡Antes debes seleccionar una figura con click derecho!");
+            uiPanel.showDialog("¡Antes debes seleccionar una figura con click derecho!");
             return;
         }
 
         fig.save();
     }
 
+    /**
+     * Método para establecer unha figura como seleccionada para posteriormente
+     * ser spawneada.
+     * 
+     * @param figure Figura a spawnear
+     */
     public void setFigureToSpawn(Figure figure) {
         this.figureToSpawn = figure;
     }
 
+    /**
+     * Método chamado cando se pulsa unha tecla.
+     * 
+     * @param e Datos da tecla pulsada
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE:
@@ -252,6 +316,11 @@ public class Universe {
         }
     }
 
+    /**
+     * Método chamado cando se solta unha tecla.
+     * 
+     * @param e Datos da tecla soltada
+     */
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_F:
@@ -262,6 +331,12 @@ public class Universe {
         }
     }
 
+    /**
+     * Método que se chama cando se fai click esquerdo.
+     * 
+     * @param row Fila pulsada
+     * @param col Columna pulsada
+     */
     public void mouseLeftClicked(int row, int col) {
         if (figureToSpawn == null) {
             changeCell(row, col);
@@ -271,10 +346,21 @@ public class Universe {
         }
     }
 
+    /**
+     * Método que se chama cando se fai click dereito.
+     * 
+     * @param row Fila pulsada
+     * @param col Columna pulsada
+     */
     public void mouseRightClicked(byte row, byte col) {
         selectCorner(row, col);
     }
 
+    /**
+     * Método para resaltar as células seleccionadas.
+     * 
+     * @param highlight Se hay que resaltar ou eliminar o resalte
+     */
     private void highlightSelected(boolean highlight) {
         if (corners[0] == null && corners[1] == null)
             return;
@@ -296,6 +382,12 @@ public class Universe {
         }
     }
 
+    /**
+     * Método para obter a figura seleccionada.
+     * 
+     * @param name Nome da figura que estamos a seleccionar
+     * @return A figura seleccionada
+     */
     private Figure getSelected(String name) {
         if (corners[0] == null || corners[1] == null)
             return null;
@@ -343,13 +435,25 @@ public class Universe {
             Log.writeErr(ex.getMessage());
         }
 
-        return new Figure(ui.getProfile(), name, outStream.toByteArray());
+        return new Figure(uiPanel.getProfile(), name, outStream.toByteArray());
     }
 
+    /**
+     * Método para intercambiar o estado da célula nunha posición dada.
+     * 
+     * @param row Fila da célula
+     * @param col Columna da célula
+     */
     private void changeCell(int row, int col) {
         cells[row][col].changeCell();
     }
 
+    /**
+     * Método para establecer un punto como canto de selección.
+     * 
+     * @param row Fila seleccionada
+     * @param col Columna seleccionada
+     */
     private void selectCorner(byte row, byte col) {
         if (corners[0] == null && corners[1] == null) {
             corners[0] = new Corner(row, col);
@@ -367,6 +471,12 @@ public class Universe {
         }
     }
 
+    /**
+     * Método para facer aparecer unha figura.
+     * 
+     * @param row Fila na que debe aparecer
+     * @param col Columna na que debe aparecer
+     */
     private void spawnFigure(int row, int col) {
         byte cols = figureToSpawn.data[0];
         byte rows = figureToSpawn.data[1];

@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -13,16 +12,20 @@ import javax.swing.JTextField;
 import models.Figure;
 
 /**
- *
- * @author iagoo
+ * Diálogo coa lista de figuras do perfil.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
-public class FiguresPanel extends JDialog implements ActionListener {
+public class FiguresDialog extends JDialog implements ActionListener {
     private final UI uiPanel;
     private final JScrollPane scrollPanel;
     private final JPanel contentPanel;
     private final JTextField manualInput;
     private final Button manualInputOk;
     
+    /**
+     * Clase que modela os botóns de figuras.
+     */
     private class FigureButton extends Button implements ActionListener {
         private final Figure figure;
         
@@ -42,7 +45,12 @@ public class FiguresPanel extends JDialog implements ActionListener {
         
     }
     
-    public FiguresPanel(UI ui) {
+    /**
+     * Construtor do diálogo.
+     * 
+     * @param ui A interface de usuario
+     */
+    public FiguresDialog(UI ui) {
         this.uiPanel = ui;
         
         setTitle("Cargar figura");

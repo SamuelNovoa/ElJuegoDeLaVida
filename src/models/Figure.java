@@ -14,17 +14,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @author a21samuelnc
+ * Modelo das figuras.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class Figure implements SQLModel {
+    /**
+     * Nome da táboa <strong>CAMPO OBRIGATORIO NOS MODELOS.</strong>
+     */
     private static String table = "figures";
     
+    /**
+     * Perfil ó que pertence a figura.
+     */
     public Profile profile;
+    
+    /**
+     * Id da figura.
+     */
     public int id;
+    
+    /**
+     * Nome da figura.
+     */
     public String name;
+    
+    /**
+     * Array de bytes que define a figura.
+     */
     public byte[] data;
     
+    /**
+     * Método para obter as figuras pertencentes a un determinado perfil.
+     * 
+     * @param profile Perfil do que obter as figuras
+     * @return Array de figuras pertencentes ó perfil dado
+     */
     public static Figure[] get(Profile profile) {
         List<Map<String, Object>> results = SQLMgr.read(table, new Condition[] { new Condition("profile", "=", profile.id) });
         Figure[] figures = new Figure[results.size()];
@@ -44,8 +69,18 @@ public class Figure implements SQLModel {
         return figures;
     }
     
+    /**
+     * Construtor vacío da figura.
+     */
     public Figure() { }
     
+    /**
+     * Construtor principal da figura.
+     * 
+     * @param profile Perfil ó que pertence a figura
+     * @param name Nome da figura
+     * @param data Array de bytes que define la figura
+     */
     public Figure(Profile profile, String name, byte[] data) {
         this.profile = profile;
         this.id = 0;

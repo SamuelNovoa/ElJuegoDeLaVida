@@ -10,26 +10,30 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
-import models.Profile;
 
 /**
- * TODO:
- *      - Click derecho para marcar figuras.
- *      - Logger en archivo de texto.
- *      - Base de datos
- *      - Menú de figuras
+ * Panel do taboeiro. É o menú principal de xogo, e nel móstranse as células.
  * 
- * @author a21samuelnc
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class TableTop extends JPanel {
     private final UI uiPanel;
     
     private final CellButton[][] cells;
     
+    /**
+     * Clase que modela os botóns ós que están asignadas as células.
+     */
     private class CellButton extends JButton implements MouseListener {
         private final byte row;
         private final byte col;
 
+        /**
+         * Construtor dos botóns ós que están asignadas as células.
+         * 
+         * @param row Fila da célula asignada
+         * @param col Columna da célula asignada
+         */
         public CellButton(byte row, byte col) {
             this.row = row;
             this.col = col;
@@ -68,6 +72,11 @@ public class TableTop extends JPanel {
         public void mouseExited(MouseEvent e) {}
     }
 
+    /**
+     * Construtor do taboeiro.
+     * 
+     * @param ui A interface de usuario
+     */
     public TableTop(UI ui) {
         super();
         
@@ -88,10 +97,21 @@ public class TableTop extends JPanel {
         setLayout(new GridLayout(TP_HEIGHT, TP_WIDTH));
     }
     
+    /**
+     * Método para cambiar o cor dunha célula.
+     * 
+     * @param row Fila da célula a cambiar
+     * @param col Columna da célula a cambiar
+     * @param color Novo cor da célula a cambiar
+     */
     public void changeCellColor(int row, int col, Color color) {
         cells[row][col].setBackground(color);
     }
     
+    /**
+     * Método para reescalar o taboeiro. É chamado cada vez que se redimensiona
+     * a ventá.
+     */
     public void resize() {
         float rel = (float)TP_WIDTH / (float)TP_HEIGHT;
         

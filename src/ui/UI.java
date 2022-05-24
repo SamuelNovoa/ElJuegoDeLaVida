@@ -18,11 +18,12 @@ import javax.swing.JOptionPane;
 import models.Profile;
 
 /**
- *
- * @author a21samuelnc
+ * Interface de usuario principal. É a raiz de toda a interface, e almacena
+ * as referencias a todos os seus compoñentes.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class UI extends JFrame implements KeyEventDispatcher, ComponentListener {
-
     private final Universe universe;
 
     private final TableTop tp;
@@ -34,6 +35,11 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
 
     private boolean blockKeyboard;
 
+    /**
+     * Construtor da interface.
+     * 
+     * @param universe Universo ó que está asignada
+     */
     public UI(Universe universe) {
         super(GAME_TITLE);
 
@@ -64,6 +70,11 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
     }
 
+    /**
+     * Método para iniciar o xogo.
+     * 
+     * @param profile Perfil que inicia o xogo
+     */
     public void startGame(Profile profile) {
         if (this.profile != null && this.profile != profile) {
             universe.reset();
@@ -80,12 +91,14 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         add(generation);
         add(Box.createRigidArea(new Dimension(0, 25)));
 
-        revalidate();
-        repaint();
+        refresh();
 
         tp.resize();
     }
 
+    /**
+     * Método para terminar o xogo e volver ó menú principal.
+     */
     public void endGame() {
         remove(btns);
         remove(tp);
@@ -95,34 +108,65 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
 
         add(mp);
 
-        revalidate();
-        repaint();
+        refresh();
     }
 
+    /**
+     * Método para actualizar a xeración actual na interface.
+     * 
+     * @param newGeneration Nova xeración
+     */
     public void setGeneration(long newGeneration) {
         generation.setText("Generación: " + newGeneration);
     }
 
+    /**
+     * Método para obter o universo.
+     * 
+     * @return Retorna unha referencia ó universo
+     */
     public Universe getUniverse() {
         return universe;
     }
 
+    /**
+     * Método para obter o taboeiro.
+     * @return Retorna unha referencia ó taboeiro
+     */
     public TableTop getTp() {
         return tp;
     }
 
+    /**
+     * Método para obter o menú de botóns do taboeiro.
+     * @return Retorna unha referencia ó menú de botóns do taboeiro
+     */
     public ButtonsPanel getBtns() {
         return btns;
     }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
+    
+    /**
+     * Método para obter o menú princiapl.
+     * @return Retorna unha referencia ó menú principal
+     */
     public MainPanel getMainPanel() {
         return mp;
     }
 
+    /**
+     * Método para obter o perfil en uso.
+     * @return Retorna o perfil en uso
+     */
+    public Profile getProfile() {
+        return profile;
+    }
+
+    /**
+     * Método para mostrar un menú de diálogo solicitando unha cadea de texto.
+     * 
+     * @param msg O mesaxe a mostrar
+     * @return A cadea introducida polo usuario ou null se a operación é cancelada.
+     */
     public String showStringDialog(String msg) {
         blockKeyboard = true;
         String resp;
@@ -134,26 +178,43 @@ public class UI extends JFrame implements KeyEventDispatcher, ComponentListener 
         return resp;
     }
     
+    /**
+     * Método para mostrar un diálogo de información.
+     * 
+     * @param msg Mesaxe a mostrar
+     */
     public void showDialog(String msg) {
         blockKeyboard = true;
         JOptionPane.showMessageDialog(rootPane, msg);
         blockKeyboard = false;
     }
     
+    /**
+     * Método para mostrar un diálogo de confirmación.
+     * 
+     * @param msg O mesaxe a mostrar
+     * @return True en caso o usuario acepte o diálogo e false en caso contrario
+     */
     public boolean showConfirmDialog(String msg) {
         blockKeyboard = true;
-        boolean result = JOptionPane.showConfirmDialog(rootPane, null, msg, JOptionPane.YES_NO_OPTION) == 0;
+        boolean result = JOptionPane.showConfirmDialog(rootPane, msg, msg, JOptionPane.YES_NO_OPTION) == 0;
         blockKeyboard = false;
         
         return result;
     }
     
-    public void openFiguresPanel() {
-        FiguresPanel figPanel = new FiguresPanel(this);
+    /**
+     * Método par aobter o diálogo de figuras.
+     */
+    public void openFiguresDialog() {
+        FiguresDialog figuresDialog = new FiguresDialog(this);
         
-        figPanel.setVisible(true);
+        figuresDialog.setVisible(true);
     }
 
+    /**
+     * Método para refrescar a interface.
+     */
     public void refresh() {
         revalidate();
         repaint();

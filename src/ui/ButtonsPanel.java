@@ -10,8 +10,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 
 /**
- *
- * @author a21iagoof
+ * Panel de botóns no taboeiro.
+ * 
+ * @author Iago Oitavén Fraga
  */
 public class ButtonsPanel extends JPanel implements ActionListener {
     private UI ui;
@@ -23,6 +24,11 @@ public class ButtonsPanel extends JPanel implements ActionListener {
     private Button savePattern;
     private Button back;
     
+    /**
+     * Construtor do panel.
+     * 
+     * @param ui A interface de usuario
+     */
     public ButtonsPanel(UI ui) {
         super();
         
@@ -68,10 +74,20 @@ public class ButtonsPanel extends JPanel implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
     
+    /**
+     * Método para actualizar a velocidade mostrada.
+     * 
+     * @param newVlc Novo multiplicador de velocidade
+     */
     public void setVlc(int newVlc) {
         vlc.setText("Velocidad: x" + newVlc);
     }
     
+    /**
+     * Método para actualizar o estado de pausa mostrado.
+     * 
+     * @param newPause Novo estado de pausa
+     */
     public void setPause(boolean newPause) {
         pause.setText(newPause ? "Iniciar" : "Pausar");
     }
@@ -85,7 +101,7 @@ public class ButtonsPanel extends JPanel implements ActionListener {
         } else if (event.getSource() == vlc) {
             ui.getUniverse().changeVelocity(VLC_AUTO);
         } else if (event.getSource() == loadPattern) {
-            ui.openFiguresPanel();
+            ui.openFiguresDialog();
         } else if (event.getSource() == savePattern) {
             ui.getUniverse().saveFigure();
         } else if (event.getSource() == back) {

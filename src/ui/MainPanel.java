@@ -15,8 +15,9 @@ import javax.swing.JPanel;
 import models.Profile;
 
 /**
- *
- * @author a21iagoof
+ * Panel principal do xogo. Mostra os perfís de usuario.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class MainPanel extends JPanel implements ActionListener {
     private final UI uiPanel;
@@ -29,10 +30,18 @@ public class MainPanel extends JPanel implements ActionListener {
     private final Button info;
     private final Button exit;
 
+    /**
+     * Clase que modela os botóns de perfil.
+     */
     private class ProfileButton extends Button implements MouseListener {
 
         private final Profile profile;
 
+        /**
+         * Construtor dos botóns de perfil.
+         * 
+         * @param profile O perfil co que está relacionado
+         */
         public ProfileButton(Profile profile) {
             super(profile.name);
 
@@ -72,6 +81,11 @@ public class MainPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Construtor do menú principal.
+     * 
+     * @param ui A interface de usuario
+     */
     public MainPanel(UI ui) {
         super();
 
@@ -119,6 +133,9 @@ public class MainPanel extends JPanel implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
+    /**
+     * Método para crear un novo perfil.
+     */
     private void newProfile() {
         String name = uiPanel.showStringDialog("Introduce el nombre del perfil:");
         if (name == null) {
@@ -137,6 +154,11 @@ public class MainPanel extends JPanel implements ActionListener {
         uiPanel.refresh();
     }
 
+    /**
+     * Método para eliminar un perfil.
+     * 
+     * @param profileBtn Botón de perfil pulsado
+     */
     private void deleteProfile(ProfileButton profileBtn) {
         Profile profile = profileBtn.profile;
         

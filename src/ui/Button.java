@@ -14,8 +14,9 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 
 /**
- *
- * @author a21samuelnc
+ * Clase cos atributos visuais defectivos.
+ * 
+ * @author Iago Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class Button extends JButton {
     Button(String text) {

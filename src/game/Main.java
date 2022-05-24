@@ -8,13 +8,16 @@ package game;
 import logging.Log;
 
 /**
- *
- * @author a21samuelnc
+ * Clase principal do xogo.
+ * 
+ * @author Fraga Oitavén Fraga e Samuel Novoa Comesaña
  */
 public class Main {
 
     /**
-     * @param args the command line arguments
+     * Método de entrada del programa.
+     * 
+     * @param args argumentos de comando (Sin uso)
      */
     public static void main(String[] args) {
         Universe universe = new Universe();
