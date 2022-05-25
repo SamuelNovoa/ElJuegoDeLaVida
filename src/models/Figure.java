@@ -54,7 +54,6 @@ public class Figure implements SQLModel {
         List<Map<String, Object>> results = SQLMgr.read(table, new Condition[] { new Condition("profile", "=", profile.id) });
         Figure[] figures = new Figure[results.size()];
         
-        System.out.println(results.size());
         for (int i = 0; i < results.size(); i++) {
             Map<String, Object> tuple = results.get(i);
             Figure figure = new Figure();
